@@ -2,7 +2,7 @@ import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-	template: '<canvas id="canvas" [width]="viewportWidth" [height]="viewportHeight"></canvas>'
+	template: '<canvas id="canvas" controls (p_controls_e)="controls($event)" [width]="viewportWidth" [height]="viewportHeight"></canvas>'
 })
 
 export class main_c {
@@ -29,6 +29,35 @@ export class main_c {
 		window.scope = this;
 		this.canvas = document.querySelector('#canvas');
 		this.ctx = this.canvas.getContext('2d');
+		this.drawViewport();
+	}
+
+	public controls(direction: string): void {
+		console.log(direction);
+		if(direction === 'left') this.left();
+		else if(direction === 'right') this.right();
+	}
+
+	public left(): void {
+		let curplayerPos: number = this.map.indexOf(1);
+		let newPlayerPos: number = curplayerPos - 1;
+		if(this.map[newPlayerPos] === 0){
+			this.map[curplayerPos] = 0;
+			this.map[newPlayerPos] = 1;
+			this.clearField();
+			this.drawViewport();
+		}
+	}
+
+	public right(): void {
+		let curplayerPos: number = this.map.indexOf(1);
+		let newPlayerPos: number = curplayerPos + 1;
+		if(this.map[newPlayerPos] === 0){
+			this.map[curplayerPos] = 0;
+			this.map[newPlayerPos] = 1;
+			this.clearField();
+			this.drawViewport();
+		}
 	}
 
 	public clearField(): void {
@@ -36,6 +65,8 @@ export class main_c {
 	}
 
 	public drawViewport(): void {
+		//tmp fix for extend x2
+		let extendX2: boolean = false;
 		//get y
 		let y: number = this.map.indexOf(1);
 		//get curLine
@@ -44,6 +75,7 @@ export class main_c {
 		let x1: number = y - Math.floor(this.viewportWidth/this.factor/2);
 		if(Math.floor(x1/(this.mapWidth/this.factor)) !== curLine){
 			x1 = (this.mapWidth/this.factor) * curLine;
+			extendX2 = true;
 		}
 		//get x2
 		let x2: number = y + Math.floor(this.viewportWidth/this.factor/2);
@@ -53,7 +85,7 @@ export class main_c {
 			x1 -= (Math.floor(this.viewportWidth/this.factor/2) - (x2 - y));
 		}
 		//extend x2
-		if(Math.floor(x1/(this.mapWidth/this.factor)) !== curLine){
+		if(extendX2){
 			//extend x2
 			x2 += (Math.floor(this.viewportWidth/this.factor/2) - (y - x1));
 		}
