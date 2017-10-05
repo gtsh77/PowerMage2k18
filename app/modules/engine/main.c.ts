@@ -34,12 +34,30 @@ export class main_c {
 
 	public controls(direction: string): void {
 		let curplayerPos: number = this.map.indexOf(1);
+		let curplayerLine: number = Math.floor(curplayerPos/(this.mapWidth/this.factor));
 		let newPlayerPos: number = null;
+		let newPlayerLine: number = null;
 
-		if(direction === 'left') newPlayerPos = curplayerPos - 1;
-		else if(direction === 'right') newPlayerPos = curplayerPos + 1;
-		else if(direction === 'up') newPlayerPos = curplayerPos - this.mapWidth/this.factor;
-		else if(direction === 'down') newPlayerPos = curplayerPos + this.mapWidth/this.factor;
+		if(direction === 'left'){
+			newPlayerPos = curplayerPos - 1;
+			newPlayerLine = Math.floor(newPlayerPos/(this.mapWidth/this.factor));
+			if(curplayerLine !== newPlayerLine) return;
+		} 
+		else if(direction === 'right'){
+			newPlayerPos = curplayerPos + 1;
+			newPlayerLine = Math.floor((newPlayerPos + 1)/(this.mapWidth/this.factor));
+			if(curplayerLine !== newPlayerLine) return;			
+		} 
+		else if(direction === 'up'){
+			newPlayerPos = curplayerPos - this.mapWidth/this.factor;
+			if(newPlayerPos < 0) return;
+
+		} 
+		else if(direction === 'down'){
+			newPlayerPos = curplayerPos + this.mapWidth/this.factor;
+			newPlayerLine = Math.floor(newPlayerPos/(this.mapWidth/this.factor));
+			if(newPlayerLine + 2 > this.mapHeight/this.factor) return;	
+		} 
 
 		if(this.map[newPlayerPos] === 0){
 			this.map[curplayerPos] = 0;
@@ -86,7 +104,6 @@ export class main_c {
 			nDownLines = Math.floor(this.viewportHeight/this.factor/2);
 		}
 		else {
-			console.log('downlimit');
 			extendUpLines = true;
 			nDownLines = this.mapHeight/this.factor - curLine - 1;
 
