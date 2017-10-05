@@ -1,6 +1,10 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+interface IGameObjects {
+	[id: number]: any;
+}
+
 @Component({
 	template: '<canvas id="canvas" controls (p_controls_e)="controls($event)" [width]="viewportWidth * factor" [height]="viewportHeight * factor"></canvas>'
 })
@@ -17,6 +21,20 @@ export class main_c {
 	private ctx: CanvasRenderingContext2D = null;
 
 	private map: number[] = null;
+
+	private objects: IGameObjects = {
+		1: 'player',
+		10: 'strongwall',
+		20: 'easywall',
+		30: 'lockeddoor',
+		40: 'key',
+		50: 'item1',
+		51: 'item1',
+		52: 'item1',
+		60: 'portal',
+		101: 'horde_mage',
+		201: 'allience_vendor'
+	}
 
 	constructor(private route: ActivatedRoute){}
 
@@ -122,10 +140,17 @@ export class main_c {
 			let end: number = x2 - (this.mapWidth * i);
 			for(let j: number = start, j2: number = 0; j <= end; j++, j2 += this.factor){
 				if(this.map[j] !== 0){
-					if(this.map[j] === 2) this.ctx.fillStyle = 'black';
-					else if(this.map[j] === 1) this.ctx.fillStyle = 'red';
+					if(this.objects[this.map[j]] === 'player'){
+						//draw brick then image
+						this.ctx.fillStyle = 'blue';
+						//this.ctx.fillRect(j2,i2,this.factor, this.factor);
+						//this.ctx.drawImage();
+					}
+					else if(this.objects[this.map[j]] === 'strongwall'){
+						this.ctx.fillStyle = '#ff55ff';
+					}
 				}
-				else this.ctx.fillStyle = 'white';				
+				else this.ctx.fillStyle = '#00aa00';
 				this.ctx.fillRect(j2,i2,this.factor, this.factor);
 			}
 		}
