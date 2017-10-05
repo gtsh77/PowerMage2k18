@@ -72,8 +72,8 @@ export class main_c {
 
 		console.log(curLine,y,x1,x2,nDownLines,nUpLines);
 
-		//start rendering upLines
-		for(let i: number = nUpLines, i2: number = 0; i > 0 ;i--,i2+=this.factor){
+		//start rendering
+		for(let i: number = nUpLines, i2: number = 0; i >= -nDownLines ;i--,i2+=this.factor){
 			let start: number = x1 - ((this.mapWidth/this.factor) * i);
 			let end: number = x2 - ((this.mapWidth/this.factor) * i);
 			for(let j: number = start, j2: number = 0; j <= end; j++,j2+=this.factor){
@@ -81,14 +81,12 @@ export class main_c {
 				//define is there obj?
 				if(this.map[j] !== 0){
 					if(this.map[j] === 2) this.ctx.fillStyle = 'black';
+					else if(this.map[j] === 1) this.ctx.fillStyle = 'red';
 				}
 				else this.ctx.fillStyle = 'white';				
 				this.ctx.fillRect(j2,i2,this.factor, this.factor);
 			}
-
 		}
-		
-
 	}
 }
 
