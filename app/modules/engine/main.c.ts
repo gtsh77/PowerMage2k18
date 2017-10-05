@@ -9,7 +9,7 @@ export class main_c {
 	private viewportWidth: number = 500;
 	private viewportHeight: number = 250;
 	private mapWidth: number = 2500;
-	private mapHeight: number = 250;
+	private mapHeight: number = 2500;
 	private factor: number = 25;
 
 	private canvas: any = null;
@@ -33,25 +33,14 @@ export class main_c {
 	}
 
 	public controls(direction: string): void {
-		console.log(direction);
-		if(direction === 'left') this.left();
-		else if(direction === 'right') this.right();
-	}
-
-	public left(): void {
 		let curplayerPos: number = this.map.indexOf(1);
-		let newPlayerPos: number = curplayerPos - 1;
-		if(this.map[newPlayerPos] === 0){
-			this.map[curplayerPos] = 0;
-			this.map[newPlayerPos] = 1;
-			this.clearField();
-			this.drawViewport();
-		}
-	}
+		let newPlayerPos: number = null;
 
-	public right(): void {
-		let curplayerPos: number = this.map.indexOf(1);
-		let newPlayerPos: number = curplayerPos + 1;
+		if(direction === 'left') newPlayerPos = curplayerPos - 1;
+		else if(direction === 'right') newPlayerPos = curplayerPos + 1;
+		else if(direction === 'up') newPlayerPos = curplayerPos - this.mapWidth/this.factor;
+		else if(direction === 'down') newPlayerPos = curplayerPos + this.mapWidth/this.factor;
+
 		if(this.map[newPlayerPos] === 0){
 			this.map[curplayerPos] = 0;
 			this.map[newPlayerPos] = 1;
@@ -67,6 +56,8 @@ export class main_c {
 	public drawViewport(): void {
 		//tmp fix for extend x2
 		let extendX2: boolean = false;
+		//tmp fix for extend upLines
+		let extendUpLines: boolean = false;
 		//get y
 		let y: number = this.map.indexOf(1);
 		//get curLine
@@ -91,16 +82,30 @@ export class main_c {
 		}
 		//get nDownLines
 		let nDownLines: number = null;
-		if(curLine + Math.floor(this.viewportHeight/this.factor/2) * this.mapWidth/this.factor <= this.map.length){
+		if((curLine + Math.floor(this.viewportHeight/this.factor/2)) * this.mapWidth/this.factor < this.map.length){
 			nDownLines = Math.floor(this.viewportHeight/this.factor/2);
 		}
-		else nDownLines = this.mapWidth/this.factor - curLine;
+		else {
+			console.log('downlimit');
+			extendUpLines = true;
+			nDownLines = this.mapHeight/this.factor - curLine - 1;
+
+		}
 		//get nUpLines
 		let nUpLines: number = null;
 		if(Math.floor(this.viewportHeight/this.factor/2) < curLine){
 			nUpLines = Math.floor(this.viewportHeight/this.factor/2);
 		}
-		else nUpLines = curLine;
+		else {
+			nUpLines = curLine;
+			//extend downLines
+			nDownLines += Math.floor(this.viewportHeight/this.factor/2) - nUpLines;
+		}
+
+		//extend upLines
+		if(extendUpLines){
+			nUpLines += Math.floor(this.viewportHeight/this.factor/2) - nDownLines;
+		}
 
 		console.log(curLine,y,x1,x2,nDownLines,nUpLines);
 
