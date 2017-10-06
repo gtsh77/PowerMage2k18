@@ -107,7 +107,7 @@ export class main_c {
 			extendX2 = true;
 		}
 		if(Math.floor(x2/this.mapWidth) !== curLine){
-			x2 = this.mapWidth * (curLine + 1) - 1;
+			x2 = this.mapWidth * (curLine + 1);
 			x1 -= (Math.floor(this.viewportWidth/2) - (x2 - y));
 		}
 		if(extendX2){
@@ -118,7 +118,7 @@ export class main_c {
 		}
 		else {
 			extendUpLines = true;
-			nDownLines = this.mapHeight - curLine - 1;
+			nDownLines = this.mapHeight - curLine;
 
 		}
 		if(Math.floor(this.viewportHeight/2) < curLine){
@@ -142,15 +142,15 @@ export class main_c {
 				if(this.map[j] !== 0){
 					if(this.objects[this.map[j]] === 'player'){
 						//draw brick then image
-						this.ctx.fillStyle = 'blue';
+						this.ctx.fillStyle = 'red';
 						//this.ctx.fillRect(j2,i2,this.factor, this.factor);
 						//this.ctx.drawImage();
 					}
 					else if(this.objects[this.map[j]] === 'strongwall'){
-						this.ctx.fillStyle = '#ff55ff';
+						this.ctx.fillStyle = '#000';
 					}
 				}
-				else this.ctx.fillStyle = '#00aa00';
+				else this.ctx.fillStyle = '#fff';
 				this.ctx.fillRect(j2,i2,this.factor, this.factor);
 			}
 		}
