@@ -34,6 +34,8 @@ export class main_c {
 	private gameObjects: IGameObjects = null;
 	private gameTextures: IGameTextures = null;
 
+	private isPlayerGoLeft: boolean = true;
+
 	constructor(private route: ActivatedRoute){}
 
 	public ngOnInit(): void {
@@ -106,9 +108,13 @@ export class main_c {
 				img: (new Image(16,24)),
 				url: '/assets/current/player1.gif'
 			},
-			'player2': {
+			'player2r': {
 				img: (new Image(32,32)),
-				url: '/assets/current/player2.png'
+				url: '/assets/current/player2r.png'
+			},
+			'player2l': {
+				img: (new Image(32,32)),
+				url: '/assets/current/player2l.png'
 			},
 			'horde_grunt': {
 				img: (new Image(21,32)),
@@ -128,7 +134,11 @@ export class main_c {
 				// this.ctx.fillStyle = 'red';
 				// this.ctx.fillRect(j2,i2,this.factor, this.factor);
 				this.ctx.drawImage(this.gameTextures['brick1'].img, j2, i2,this.factor, this.factor);
-				this.ctx.drawImage(this.gameTextures['player2'].img, j2, i2,32,32);
+				if(this.isPlayerGoLeft){
+					this.ctx.drawImage(this.gameTextures['player2l'].img, j2, i2,32,32);
+				}
+				else this.ctx.drawImage(this.gameTextures['player2r'].img, j2, i2,32,32);
+				
 			}
 			else if(this.gameObjects[this.map[j]] === 'horde_grunt'){
 				//draw brick then image
@@ -162,11 +172,13 @@ export class main_c {
 			newPlayerLine: number = null;
 
 		if(direction === 'left'){
+			if(!this.isPlayerGoLeft) this.isPlayerGoLeft = true;
 			newPlayerPos = curplayerPos - 1;
 			newPlayerLine = Math.floor(newPlayerPos/this.mapWidth);
 			if(curplayerLine !== newPlayerLine) return;
 		} 
 		else if(direction === 'right'){
+			if(this.isPlayerGoLeft) this.isPlayerGoLeft = false;
 			newPlayerPos = curplayerPos + 1;
 			newPlayerLine = Math.floor((newPlayerPos + 1)/this.mapWidth);
 			if(curplayerLine !== newPlayerLine) return;			
