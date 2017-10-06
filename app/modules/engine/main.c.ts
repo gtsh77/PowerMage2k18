@@ -5,6 +5,16 @@ interface IGameObjects {
 	[id: number]: any;
 }
 
+interface IGameTextures {
+	[id: string]: IGameTexturesItem
+}
+
+interface IGameTexturesItem {
+	isLoaded?: boolean;
+	img: any;
+	url: string;
+}
+
 @Component({
 	template: '<canvas id="canvas" controls (p_controls_e)="controls($event)" [width]="viewportWidth * factor" [height]="viewportHeight * factor"></canvas>'
 })
@@ -15,26 +25,14 @@ export class main_c {
 	private viewportHeight: number = 10;
 	private mapWidth: number = null;
 	private mapHeight: number = null;
-	private factor: number = 25;
+	private factor: number = 32;
 
 	private canvas: any = null;
 	private ctx: CanvasRenderingContext2D = null;
 
 	private map: number[] = null;
-
-	private objects: IGameObjects = {
-		1: 'player',
-		10: 'strongwall',
-		20: 'easywall',
-		30: 'lockeddoor',
-		40: 'key',
-		50: 'item1',
-		51: 'item1',
-		52: 'item1',
-		60: 'portal',
-		101: 'horde_mage',
-		201: 'allience_vendor'
-	}
+	private gameObjects: IGameObjects = null;
+	private gameTextures: IGameTextures = null;
 
 	constructor(private route: ActivatedRoute){}
 
@@ -49,7 +47,112 @@ export class main_c {
 	public ngAfterViewInit(): void {		
 		this.canvas = document.querySelector('#canvas');
 		this.ctx = this.canvas.getContext('2d');
-		this.drawViewport();
+		this.defineGameObjects();
+		this.loadGameTextures(() => {
+			this.drawViewport();
+		});		
+	}
+
+	public isAllDataLoaded(): boolean {
+		for(let item in this.gameTextures) 
+			if(!this.gameTextures[item].isLoaded) return false;
+		return true;
+	}	
+
+	public loadGameTextures(callback: () => void): void {
+		for(let id in this.gameTextures){
+			this.gameTextures[id].img.src = this.gameTextures[id].url;
+			this.gameTextures[id].img.onload = () => {
+				this.gameTextures[id].isLoaded = true;
+			}
+		}
+
+		let chkAssetsTimer = setInterval(() => {
+			if(this.isAllDataLoaded()){
+				clearInterval(chkAssetsTimer);
+				callback();
+			}
+		},250);		
+	}
+
+	public defineGameObjects(): void {
+
+		this.gameObjects = {
+			1: 'player',
+			10: 'strongwall',
+			20: 'easywall',
+			30: 'lockeddoor',
+			40: 'key',
+			50: 'item1',
+			51: 'item2',
+			52: 'item3',
+			53: 'mana_potion',
+			60: 'portal',
+			101: 'horde_mage',
+			102: 'horde_grunt',
+			201: 'allience_vendor'
+		}
+
+		this.gameTextures = {
+			'brick1': {
+				img: (new Image(32,32)),
+				url: '/assets/current/brick1.jpg'
+			},
+			'wall1': {
+				img: (new Image(32,32)),
+				url: '/assets/current/wall1.jpg'
+			},
+			'player1': {
+				img: (new Image(16,24)),
+				url: '/assets/current/player1.gif'
+			},
+			'player2': {
+				img: (new Image(32,32)),
+				url: '/assets/current/player2.png'
+			},
+			'horde_grunt': {
+				img: (new Image(21,32)),
+				url: '/assets/current/horde_grunt.png'
+			},
+			'mana_potion': {
+				img: (new Image(32,32)),
+				url: '/assets/current/mana_potion.png'
+			}
+		}
+	}
+
+	public drawObject(j,j2,i2): void {
+		if(this.map[j] !== 0){
+			if(this.gameObjects[this.map[j]] === 'player'){
+				//draw brick then image
+				// this.ctx.fillStyle = 'red';
+				// this.ctx.fillRect(j2,i2,this.factor, this.factor);
+				this.ctx.drawImage(this.gameTextures['brick1'].img, j2, i2,this.factor, this.factor);
+				this.ctx.drawImage(this.gameTextures['player2'].img, j2, i2,32,32);
+			}
+			else if(this.gameObjects[this.map[j]] === 'horde_grunt'){
+				//draw brick then image
+				// this.ctx.fillStyle = 'green';
+				// this.ctx.fillRect(j2,i2,this.factor, this.factor);
+				this.ctx.drawImage(this.gameTextures['brick1'].img, j2, i2,this.factor, this.factor);
+				this.ctx.drawImage(this.gameTextures['horde_grunt'].img, j2 + 4, i2,21,32);
+			}
+			else if(this.gameObjects[this.map[j]] === 'mana_potion'){
+				//draw brick then image
+				// this.ctx.fillStyle = 'blue';
+				// this.ctx.fillRect(j2,i2,this.factor, this.factor);
+				this.ctx.drawImage(this.gameTextures['brick1'].img, j2, i2,this.factor, this.factor);
+				this.ctx.drawImage(this.gameTextures['mana_potion'].img, j2, i2,32,32);
+			}
+			else if(this.gameObjects[this.map[j]] === 'strongwall' || this.gameObjects[this.map[j]] === 'easywall'){
+				this.ctx.drawImage(this.gameTextures['wall1'].img, j2, i2,this.factor, this.factor);
+				// this.ctx.fillStyle = '#000';
+				// this.ctx.fillRect(j2,i2,this.factor, this.factor);
+			}
+		}
+		else {
+			this.ctx.drawImage(this.gameTextures['brick1'].img, j2, i2,this.factor, this.factor);
+		}		
 	}
 
 	public controls(direction: string): void {
@@ -139,19 +242,7 @@ export class main_c {
 			let start: number = x1 - (this.mapWidth * i);
 			let end: number = x2 - (this.mapWidth * i);
 			for(let j: number = start, j2: number = 0; j <= end; j++, j2 += this.factor){
-				if(this.map[j] !== 0){
-					if(this.objects[this.map[j]] === 'player'){
-						//draw brick then image
-						this.ctx.fillStyle = 'red';
-						//this.ctx.fillRect(j2,i2,this.factor, this.factor);
-						//this.ctx.drawImage();
-					}
-					else if(this.objects[this.map[j]] === 'strongwall'){
-						this.ctx.fillStyle = '#000';
-					}
-				}
-				else this.ctx.fillStyle = '#fff';
-				this.ctx.fillRect(j2,i2,this.factor, this.factor);
+				this.drawObject(j,j2,i2);
 			}
 		}
 	}
