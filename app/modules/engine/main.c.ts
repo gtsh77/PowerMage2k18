@@ -49,7 +49,7 @@ export class main_c {
 		});
 	}
 
-	public ngAfterViewInit(): void {		
+	public ngAfterViewInit(): void {
 		this.canvas = document.querySelector('#canvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.canvas2 = document.querySelector('#canvas2');
@@ -57,12 +57,12 @@ export class main_c {
 		this.defineGameObjects();
 		this.loadGameTextures(() => {
 			this.draw2d();
-			this.draw3d();
+			this.draw3d('down');
 		});		
 	}
 
 	public getLines(): number {
-		let pIndex = this.map.indexOf(1),
+		let pIndex: number = this.map.indexOf(1),
 			nOfLines: number = 0;
 		while(this.map[pIndex] !== 10){
 			pIndex += this.mapWidth;
@@ -71,12 +71,16 @@ export class main_c {
 		return nOfLines;		
 	}
 
-	public draw3d(): void {
+	public draw3d(direction: string): void {
 		let nOfLines: number = this.getLines(),
-			viewFactor: number = nOfLines* 2;
+			viewFactor: number = nOfLines* 2,
+			pIndex: number = this.map.indexOf(1);
 
-		this.clearViewport3d();	
-		for(let i: number = 0; i <= viewFactor; i++){
+		this.clearViewport3d();
+		for(let i: number = 0, arrIndex: number = (pIndex + (this.mapWidth * nOfLines) - nOfLines); i <= viewFactor; i++,arrIndex++){
+			//detect empty space
+			if(!this.map[arrIndex] || this.map[arrIndex] === 0) continue;
+			//draw bricks
 			this.ctx3d.drawImage(this.gameTextures['wall3d'].img, -((this.viewportWidth * this.factor)/viewFactor/2) + ((this.viewportWidth * this.factor)/viewFactor)*i, ((this.viewportHeight * this.factor) - (this.viewportWidth * this.factor)/viewFactor)/2, (this.viewportWidth * this.factor)/viewFactor, (this.viewportWidth * this.factor)/viewFactor);
 		}
 	}
@@ -229,7 +233,7 @@ export class main_c {
 			this.map[newPlayerPos] = 1;
 			this.clearViewport2d();
 			this.draw2d();
-			this.draw3d();
+			this.draw3d(direction);
 		}
 	}
 
