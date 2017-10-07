@@ -73,9 +73,12 @@ export class main_c {
 
 	public draw3d(): void {
 		let nOfLines: number = this.getLines(),
-			viewFactor: number = (nOfLines - 1)* 20;
-		this.clearViewport3d();
-		this.ctx3d.drawImage(this.gameTextures['wall3d'].img, viewFactor/2, viewFactor/2, 320 - viewFactor, 320 - viewFactor);
+			viewFactor: number = nOfLines* 2;
+
+		this.clearViewport3d();	
+		for(let i: number = 0; i <= viewFactor; i++){
+			this.ctx3d.drawImage(this.gameTextures['wall3d'].img, -((this.viewportWidth * this.factor)/viewFactor/2) + ((this.viewportWidth * this.factor)/viewFactor)*i, ((this.viewportHeight * this.factor) - (this.viewportWidth * this.factor)/viewFactor)/2, (this.viewportWidth * this.factor)/viewFactor, (this.viewportWidth * this.factor)/viewFactor);
+		}
 	}
 
 	public isAllDataLoaded(): boolean {
