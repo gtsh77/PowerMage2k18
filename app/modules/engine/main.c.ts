@@ -16,7 +16,7 @@ interface IGameTexturesItem {
 }
 
 @Component({
-	template: '<canvas id="canvas" controls (p_controls_e)="controls($event)" [width]="viewportWidth * factor" [height]="viewportHeight * factor"></canvas>'
+	template: '<canvas id="canvas" controls (p_controls_e)="controls($event)" [width]="viewportWidth * factor" [height]="viewportHeight * factor"></canvas><canvas id="canvas2" [width]="viewportWidth * factor" [height]="viewportHeight * factor"></canvas>'
 })
 
 export class main_c {
@@ -29,6 +29,9 @@ export class main_c {
 
 	private canvas: any = null;
 	private ctx: CanvasRenderingContext2D = null;
+
+	private canvas2: any = null;
+	private ctx3d: CanvasRenderingContext2D = null;
 
 	private map: number[] = null;
 	private gameObjects: IGameObjects = null;
@@ -49,10 +52,30 @@ export class main_c {
 	public ngAfterViewInit(): void {		
 		this.canvas = document.querySelector('#canvas');
 		this.ctx = this.canvas.getContext('2d');
+		this.canvas2 = document.querySelector('#canvas2');
+		this.ctx3d = this.canvas2.getContext('2d');
 		this.defineGameObjects();
 		this.loadGameTextures(() => {
-			this.drawViewport();
+			this.draw2d();
+			this.draw3d();
 		});		
+	}
+
+	public getLines(): number {
+		let pIndex = this.map.indexOf(1),
+			nOfLines: number = 0;
+		while(this.map[pIndex] !== 10){
+			pIndex += this.mapWidth;
+			nOfLines++;
+		}
+		return nOfLines;		
+	}
+
+	public draw3d(): void {
+		let nOfLines: number = this.getLines(),
+			viewFactor: number = (nOfLines - 1)* 20;
+		this.clearViewport3d();
+		this.ctx3d.drawImage(this.gameTextures['wall3d'].img, viewFactor/2, viewFactor/2, 320 - viewFactor, 320 - viewFactor);
 	}
 
 	public isAllDataLoaded(): boolean {
@@ -123,6 +146,10 @@ export class main_c {
 			'mana_potion': {
 				img: (new Image(32,32)),
 				url: '/assets/current/mana_potion.png'
+			},
+			'wall3d': {
+				img: (new Image(320,320)),
+				url: '/assets/current/wall3d.png'
 			}
 		}
 	}
@@ -131,8 +158,8 @@ export class main_c {
 		if(this.map[j] !== 0){
 			if(this.gameObjects[this.map[j]] === 'player'){
 				//draw brick then image
-				// this.ctx.fillStyle = 'red';
-				// this.ctx.fillRect(j2,i2,this.factor, this.factor);
+				 //this.ctx.fillStyle = 'red';
+				 //this.ctx.fillRect(j2,i2,this.factor, this.factor);
 				this.ctx.drawImage(this.gameTextures['brick1'].img, j2, i2,this.factor, this.factor);
 				if(this.isPlayerGoLeft){
 					this.ctx.drawImage(this.gameTextures['player2l'].img, j2, i2,32,32);
@@ -197,16 +224,21 @@ export class main_c {
 		if(this.map[newPlayerPos] === 0){
 			this.map[curplayerPos] = 0;
 			this.map[newPlayerPos] = 1;
-			this.clearViewport();
-			this.drawViewport();
+			this.clearViewport2d();
+			this.draw2d();
+			this.draw3d();
 		}
 	}
 
-	public clearViewport(): void {
-		this.ctx.clearRect(0,0,this.viewportWidth,this.viewportHeight);
+	public clearViewport2d(): void {
+		this.ctx.clearRect(0,0,this.viewportWidth * this.factor,this.viewportHeight * this.factor);
 	}
 
-	public drawViewport(): void {
+	public clearViewport3d(): void {
+		this.ctx3d.clearRect(0,0,this.viewportWidth * this.factor,this.viewportHeight * this.factor);
+	}
+
+	public draw2d(): void {
 		//calc pre-render staff
 		let extendX2: boolean = false,
 			extendUpLines: boolean = false,

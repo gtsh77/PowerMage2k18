@@ -9,3 +9,10 @@ body {
 	margin: 0 auto;
 	margin-top: 50px;
 }
+
+#canvas2 {	
+	border: 1px solid #fff;
+	display: block;
+	margin: 0 auto;
+	margin-top: 50px;
+}
