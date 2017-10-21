@@ -6,6 +6,9 @@
 
 #define FIELDW 640
 #define FIELDH 480
+#define CENTERX FIELDW/2
+#define CENTERY FIELDH/2
+#define BIT16(u) (u) * 255
 
 //own types
 typedef char byte_u;
@@ -23,6 +26,10 @@ extern GC gc;
 extern int_u gc_mask;
 extern XGCValues gc_val;
 extern long_u start, end;
+extern byte playerIndex;
+extern Visual *visual;
+extern Colormap colormap;
 
-//protos
+//libs: protos
 long_u getCycles(void);
+dbyte getPlayer(byte *, dbyte);

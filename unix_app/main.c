@@ -10,14 +10,14 @@ GC gc;
 int_u gc_mask;
 XGCValues gc_val;
 long_u start, end;
-
- 
+byte playerIndex;
+Visual *visual;
+Colormap colormap;
 
 int main(void)
 {
+
     //printf("%d\n",sizeof(long));
-
-
     //connect to xserv
     session = XOpenDisplay(NULL);
     if (session == NULL)
@@ -34,7 +34,7 @@ int main(void)
     //printf("%d\n",ConnectionNumber(session));
  
     //create window
-    window = XCreateSimpleWindow(session, RootWindow(session, cur_screen), 0, 0, FIELDW, FIELDH, 1,
+    window = XCreateSimpleWindow(session, RootWindow(session, cur_screen), 0, 0, FIELDW, FIELDH, 0,
                            BlackPixel(session, cur_screen), WhitePixel(session, cur_screen));
  
     //select events??
@@ -42,6 +42,7 @@ int main(void)
  
     //map => show the window
     XMapWindow(session, window);
+    XFlush(session);
  
     //event loop
     while(1)
@@ -63,17 +64,3 @@ int main(void)
     XCloseDisplay(session); 
     return 0;
  }
-
- long_u getCycles(void)
- {
-    long_u lo,hi;
-    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-    return ((long_u)hi << 32) | lo;
- }
-
-
-
-
-
-    //XFillRectangle(session, window, DefaultGC(session, cur_screen), 20, 20, 10, 10);
-            //XDrawString(session, window, DefaultGC(session, cur_screen), 50, 50, "Hello, World!", strlen("Hello, World!"));
