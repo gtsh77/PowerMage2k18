@@ -26,10 +26,17 @@ extern GC gc;
 extern int_u gc_mask;
 extern XGCValues gc_val;
 extern long_u start, end;
-extern byte playerIndex;
+extern dbyte playerIndex;
 extern Visual *visual;
 extern Colormap colormap;
+
+struct ILevel
+{
+    byte *map;
+    dbyte length;
+} level;
 
 //libs: protos
 long_u getCycles(void);
 dbyte getPlayer(byte *, dbyte);
+void loadTileMap(void);

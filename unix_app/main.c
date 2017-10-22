@@ -10,14 +10,14 @@ GC gc;
 int_u gc_mask;
 XGCValues gc_val;
 long_u start, end;
-byte playerIndex;
 Visual *visual;
 Colormap colormap;
 
 int main(void)
 {
-
-    //printf("%d\n",sizeof(long));
+    //load level
+    loadTileMap();
+    
     //connect to xserv
     session = XOpenDisplay(NULL);
     if (session == NULL)
@@ -28,10 +28,6 @@ int main(void)
  
     //get screen id from xserv
     cur_screen = (byte)DefaultScreen(session);
-
-    //get some info??
-    //printf("%d\n",ConnectionNumber(session));
-    //printf("%d\n",ConnectionNumber(session));
  
     //create window
     window = XCreateSimpleWindow(session, RootWindow(session, cur_screen), 0, 0, FIELDW, FIELDH, 0,
