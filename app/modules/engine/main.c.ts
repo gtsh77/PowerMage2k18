@@ -31,11 +31,16 @@ interface IFactors {
 	h: number;
 }
 
+interface imain_c {
+	ngAfterViewInit: () => void;
+	calculateFactors: (x1,y1,x2,y2,x3,y3,x4,y4,X1,Y1,X2,Y2,X3,Y3,X4,Y4) => IFactors;
+}
+
 @Component({
 	template: '<canvas id="canvas" controls (p_controls_e)="controls($event)" [width]="viewportWidth * factor" [height]="viewportHeight * factor"></canvas><canvas id="canvas2" [width]="viewportWidth * factor" [height]="viewportHeight * factor"></canvas>'
 })
 
-export class main_c {
+export class main_c implements imain_c {
 	private debug: boolean = false;
 	private viewportWidth: number = 20;
 	private viewportHeight: number = 10;
@@ -157,6 +162,14 @@ export class main_c {
 		newC.Y = Math.trunc((factors.d * x + factors.e * y + factors.f)/(factors.g * x + factors.h * y + 1));
 
 		return newC;
+	}
+
+	public drawTextture(): void 
+	{
+		this.clearViewport3d();
+		console.time('texture');
+		this.ctx3d.drawImage(this.gameTextures['wall3d'].img,0,0,320,320);
+		console.timeEnd('texture');
 	}
 
 	//convert square texture to trapezoid using deg val
