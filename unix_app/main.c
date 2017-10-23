@@ -16,8 +16,15 @@ Colormap colormap;
 int main(void)
 {
     //load level
-    loadTileMap();
-    
+    loadTileMap("../maps/unix1.json.bin");
+
+    //load texture
+    struct asset new_asset;
+    loadAsset("jpg","../assets/current/brick1.jpg", &new_asset);
+    // printf("%p\n",&new_asset.data);
+    // printf("%p\n",&new_asset.data[0]);
+    // printf("%p\n",&new_asset.data[1]);
+
     //connect to xserv
     session = XOpenDisplay(NULL);
     if (session == NULL)

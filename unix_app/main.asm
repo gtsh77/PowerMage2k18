@@ -1,5 +1,6 @@
 	.file	"main.c"
 	.comm	level,16,16
+	.comm	gameObject,240,32
 	.text
 	.globl	getCycles
 	.type	getCycles, @function
@@ -69,10 +70,9 @@ getPlayer:
 	.section	.rodata
 .LC0:
 	.string	"rb"
+	.align 8
 .LC1:
-	.string	"../maps/unix1.json.bin"
-.LC2:
-	.string	"can't read lvl file"
+	.string	"error: can't read world file: %s\n"
 	.text
 	.globl	loadTileMap
 	.type	loadTileMap, @function
@@ -84,11 +84,22 @@ loadTileMap:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$16, %rsp
+	subq	$32, %rsp
+	movq	%rdi, -24(%rbp)
+	movq	-24(%rbp), %rax
 	movl	$.LC0, %esi
-	movl	$.LC1, %edi
+	movq	%rax, %rdi
 	call	fopen
 	movq	%rax, -8(%rbp)
+	cmpq	$0, -8(%rbp)
+	jne	.L9
+	movq	-24(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$.LC1, %edi
+	movl	$0, %eax
+	call	printf
+	jmp	.L8
+.L9:
 	movq	-8(%rbp), %rax
 	movl	$2, %edx
 	movl	$0, %esi
@@ -107,13 +118,6 @@ loadTileMap:
 	movq	%rax, %rdi
 	call	malloc
 	movq	%rax, level(%rip)
-	cmpq	$0, -8(%rbp)
-	jne	.L9
-	movl	$.LC2, %edi
-	movl	$0, %eax
-	call	printf
-	jmp	.L8
-.L9:
 	movzwl	-10(%rbp), %esi
 	movq	level(%rip), %rax
 	movq	-8(%rbp), %rdx
@@ -134,17 +138,191 @@ loadTileMap:
 	.cfi_endproc
 .LFE9:
 	.size	loadTileMap, .-loadTileMap
+	.section	.rodata
+.LC2:
+	.string	"jpg"
+	.align 8
+.LC3:
+	.string	"error: can't read asset file: %s\n"
+	.text
+	.globl	loadAsset
+	.type	loadAsset, @function
+loadAsset:
+.LFB10:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$912, %rsp
+	movq	%rdi, -888(%rbp)
+	movq	%rsi, -896(%rbp)
+	movq	%rdx, -904(%rbp)
+	cmpq	$.LC2, -888(%rbp)
+	jne	.L21
+	leaq	-880(%rbp), %rax
+	movq	%rax, %rdi
+	call	jpeg_std_error
+	movq	%rax, -704(%rbp)
+	leaq	-704(%rbp), %rax
+	movl	$664, %edx
+	movl	$90, %esi
+	movq	%rax, %rdi
+	call	jpeg_CreateDecompress
+	movq	-896(%rbp), %rax
+	movl	$.LC0, %esi
+	movq	%rax, %rdi
+	call	fopen
+	movq	%rax, -16(%rbp)
+	cmpq	$0, -16(%rbp)
+	jne	.L14
+	movq	-896(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$.LC3, %edi
+	movl	$0, %eax
+	call	printf
+	jmp	.L21
+.L14:
+	movq	-16(%rbp), %rdx
+	leaq	-704(%rbp), %rax
+	movq	%rdx, %rsi
+	movq	%rax, %rdi
+	call	jpeg_stdio_src
+	leaq	-704(%rbp), %rax
+	movl	$1, %esi
+	movq	%rax, %rdi
+	call	jpeg_read_header
+	leaq	-704(%rbp), %rax
+	movq	%rax, %rdi
+	call	jpeg_start_decompress
+	movl	-564(%rbp), %eax
+	movl	%eax, %eax
+	movq	%rax, %rdi
+	call	malloc
+	movq	%rax, -24(%rbp)
+	movl	-568(%rbp), %eax
+	movl	%eax, %edx
+	movl	-556(%rbp), %eax
+	cltq
+	imull	%edx, %eax
+	movw	%ax, -26(%rbp)
+	movzwl	-26(%rbp), %eax
+	movq	%rax, %rdi
+	call	malloc
+	movq	%rax, %rdx
+	movq	-24(%rbp), %rax
+	movq	%rdx, (%rax)
+	movzwl	-26(%rbp), %edx
+	movl	-564(%rbp), %eax
+	imull	%edx, %eax
+	movl	%eax, %eax
+	movq	%rax, %rdi
+	call	malloc
+	movq	%rax, %rdx
+	movq	-904(%rbp), %rax
+	movq	%rdx, 16(%rax)
+	jmp	.L16
+.L19:
+	movq	-24(%rbp), %rcx
+	leaq	-704(%rbp), %rax
+	movl	$1, %edx
+	movq	%rcx, %rsi
+	movq	%rax, %rdi
+	call	jpeg_read_scanlines
+	movw	$0, -2(%rbp)
+	jmp	.L17
+.L18:
+	movq	-904(%rbp), %rax
+	movq	16(%rax), %rax
+	movl	-536(%rbp), %ecx
+	movzwl	-2(%rbp), %edx
+	imull	%ecx, %edx
+	movl	%edx, %edx
+	addq	%rax, %rdx
+	movq	-24(%rbp), %rax
+	movq	(%rax), %rcx
+	movzwl	-2(%rbp), %eax
+	addq	%rcx, %rax
+	movzbl	(%rax), %eax
+	movb	%al, (%rdx)
+	movq	-904(%rbp), %rax
+	movq	16(%rax), %rax
+	movl	-536(%rbp), %ecx
+	movzwl	-2(%rbp), %edx
+	imull	%ecx, %edx
+	addl	$1, %edx
+	movl	%edx, %edx
+	addq	%rax, %rdx
+	movq	-24(%rbp), %rax
+	movq	(%rax), %rax
+	movzwl	-2(%rbp), %ecx
+	addq	$1, %rcx
+	addq	%rcx, %rax
+	movzbl	(%rax), %eax
+	movb	%al, (%rdx)
+	movq	-904(%rbp), %rax
+	movq	16(%rax), %rax
+	movl	-536(%rbp), %ecx
+	movzwl	-2(%rbp), %edx
+	imull	%ecx, %edx
+	addl	$2, %edx
+	movl	%edx, %edx
+	addq	%rax, %rdx
+	movq	-24(%rbp), %rax
+	movq	(%rax), %rax
+	movzwl	-2(%rbp), %ecx
+	addq	$2, %rcx
+	addq	%rcx, %rax
+	movzbl	(%rax), %eax
+	movb	%al, (%rdx)
+	addw	$3, -2(%rbp)
+.L17:
+	movzwl	-2(%rbp), %eax
+	cmpw	-26(%rbp), %ax
+	jb	.L18
+.L16:
+	movl	-536(%rbp), %edx
+	movl	-564(%rbp), %eax
+	cmpl	%eax, %edx
+	jb	.L19
+	movq	-904(%rbp), %rax
+	movq	-888(%rbp), %rdx
+	movq	%rdx, (%rax)
+	movzwl	-26(%rbp), %edx
+	movl	-564(%rbp), %eax
+	imull	%eax, %edx
+	movq	-904(%rbp), %rax
+	movl	%edx, 24(%rax)
+	leaq	-704(%rbp), %rax
+	movq	%rax, %rdi
+	call	jpeg_finish_decompress
+	leaq	-704(%rbp), %rax
+	movq	%rax, %rdi
+	call	jpeg_destroy_decompress
+	movq	-16(%rbp), %rax
+	movq	%rax, %rdi
+	call	fclose
+	nop
+.L21:
+	nop
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE10:
+	.size	loadAsset, .-loadAsset
 	.comm	playerIndex,2,2
 	.section	.rodata
-.LC3:
+.LC4:
 	.string	"%d\n"
-.LC5:
+.LC6:
 	.string	"Render: %.9f\n"
 	.text
 	.globl	draw1
 	.type	draw1, @function
 draw1:
-.LFB10:
+.LFB11:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -269,7 +447,7 @@ draw1:
 	movzwl	playerIndex(%rip), %eax
 	movzwl	%ax, %eax
 	movl	%eax, %esi
-	movl	$.LC3, %edi
+	movl	$.LC4, %edi
 	movl	$0, %eax
 	call	printf
 	call	getCycles
@@ -280,11 +458,11 @@ draw1:
 	subq	%rax, %rdx
 	movq	%rdx, %rax
 	testq	%rax, %rax
-	js	.L13
+	js	.L23
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
-	jmp	.L14
-.L13:
+	jmp	.L24
+.L23:
 	movq	%rax, %rdx
 	shrq	%rdx
 	andl	$1, %eax
@@ -292,10 +470,10 @@ draw1:
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rdx, %xmm0
 	addsd	%xmm0, %xmm0
-.L14:
-	movsd	.LC4(%rip), %xmm1
+.L24:
+	movsd	.LC5(%rip), %xmm1
 	divsd	%xmm1, %xmm0
-	movl	$.LC5, %edi
+	movl	$.LC6, %edi
 	movl	$1, %eax
 	call	printf
 	nop
@@ -303,7 +481,7 @@ draw1:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE10:
+.LFE11:
 	.size	draw1, .-draw1
 	.comm	session,8,8
 	.comm	window,8,8
@@ -317,35 +495,46 @@ draw1:
 	.comm	visual,8,8
 	.comm	colormap,8,8
 	.section	.rodata
-.LC6:
+.LC7:
+	.string	"../maps/unix1.json.bin"
+.LC8:
+	.string	"../assets/current/brick1.jpg"
+.LC9:
 	.string	"Cannot open server\n"
 	.text
 	.globl	main
 	.type	main, @function
 main:
-.LFB11:
+.LFB12:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	subq	$32, %rsp
+	movl	$.LC7, %edi
 	call	loadTileMap
+	leaq	-32(%rbp), %rax
+	movq	%rax, %rdx
+	movl	$.LC8, %esi
+	movl	$.LC2, %edi
+	call	loadAsset
 	movl	$0, %edi
 	call	XOpenDisplay
 	movq	%rax, session(%rip)
 	movq	session(%rip), %rax
 	testq	%rax, %rax
-	jne	.L17
+	jne	.L27
 	movq	__stderrp(%rip), %rax
 	movq	%rax, %rcx
 	movl	$19, %edx
 	movl	$1, %esi
-	movl	$.LC6, %edi
+	movl	$.LC9, %edi
 	call	fwrite
 	movl	$1, %edi
 	call	exit
-.L17:
+.L27:
 	movq	session(%rip), %rax
 	movl	224(%rax), %eax
 	movb	%al, cur_screen(%rip)
@@ -397,22 +586,22 @@ main:
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
 	call	XFlush
-.L21:
+.L31:
 	movq	session(%rip), %rax
 	movl	$cur_event, %esi
 	movq	%rax, %rdi
 	call	XNextEvent
 	movl	cur_event(%rip), %eax
 	cmpl	$12, %eax
-	jne	.L18
+	jne	.L28
 	call	draw1
-	jmp	.L21
-.L18:
+	jmp	.L31
+.L28:
 	movl	cur_event(%rip), %eax
 	cmpl	$2, %eax
-	je	.L24
-	jmp	.L21
-.L24:
+	je	.L34
+	jmp	.L31
+.L34:
 	nop
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
@@ -422,11 +611,11 @@ main:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE11:
+.LFE12:
 	.size	main, .-main
 	.section	.rodata
 	.align 8
-.LC4:
+.LC5:
 	.long	1610612736
 	.long	1105859512
 	.ident	"GCC: (FreeBSD Ports Collection) 6.4.0"
