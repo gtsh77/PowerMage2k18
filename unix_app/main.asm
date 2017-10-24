@@ -202,21 +202,19 @@ loadAsset:
 	call	malloc
 	movq	%rax, -24(%rbp)
 	movl	-568(%rbp), %eax
-	movl	%eax, %edx
-	movl	-556(%rbp), %eax
-	cltq
+	movl	-556(%rbp), %edx
 	imull	%edx, %eax
-	movw	%ax, -26(%rbp)
-	movzwl	-26(%rbp), %eax
+	movl	%eax, -28(%rbp)
+	movl	-28(%rbp), %eax
 	movq	%rax, %rdi
 	call	malloc
 	movq	%rax, %rdx
 	movq	-24(%rbp), %rax
 	movq	%rdx, (%rax)
-	movzwl	-26(%rbp), %edx
-	movl	-564(%rbp), %eax
-	imull	%edx, %eax
-	movl	%eax, %eax
+	movl	-28(%rbp), %eax
+	movl	-564(%rbp), %edx
+	movl	%edx, %edx
+	imulq	%rdx, %rax
 	movq	%rax, %rdi
 	call	malloc
 	movq	%rax, %rdx
@@ -230,56 +228,55 @@ loadAsset:
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	jpeg_read_scanlines
-	movw	$0, -2(%rbp)
+	movl	$0, -4(%rbp)
 	jmp	.L17
 .L18:
 	movq	-904(%rbp), %rax
-	movq	16(%rax), %rax
-	movl	-536(%rbp), %ecx
-	movzwl	-2(%rbp), %edx
-	imull	%ecx, %edx
-	movl	%edx, %edx
+	movq	16(%rax), %rdx
+	movl	-536(%rbp), %eax
+	imull	-4(%rbp), %eax
+	movl	%eax, %eax
 	addq	%rax, %rdx
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rcx
-	movzwl	-2(%rbp), %eax
+	movl	-4(%rbp), %eax
 	addq	%rcx, %rax
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
 	movq	-904(%rbp), %rax
-	movq	16(%rax), %rax
-	movl	-536(%rbp), %ecx
-	movzwl	-2(%rbp), %edx
-	imull	%ecx, %edx
-	addl	$1, %edx
-	movl	%edx, %edx
+	movq	16(%rax), %rdx
+	movl	-536(%rbp), %eax
+	imull	-4(%rbp), %eax
+	addl	$1, %eax
+	movl	%eax, %eax
 	addq	%rax, %rdx
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movzwl	-2(%rbp), %ecx
-	addq	$1, %rcx
+	movl	-4(%rbp), %ecx
+	addl	$1, %ecx
+	movl	%ecx, %ecx
 	addq	%rcx, %rax
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
 	movq	-904(%rbp), %rax
-	movq	16(%rax), %rax
-	movl	-536(%rbp), %ecx
-	movzwl	-2(%rbp), %edx
-	imull	%ecx, %edx
-	addl	$2, %edx
-	movl	%edx, %edx
+	movq	16(%rax), %rdx
+	movl	-536(%rbp), %eax
+	imull	-4(%rbp), %eax
+	addl	$2, %eax
+	movl	%eax, %eax
 	addq	%rax, %rdx
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movzwl	-2(%rbp), %ecx
-	addq	$2, %rcx
+	movl	-4(%rbp), %ecx
+	addl	$2, %ecx
+	movl	%ecx, %ecx
 	addq	%rcx, %rax
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
-	addw	$3, -2(%rbp)
+	addl	$3, -4(%rbp)
 .L17:
-	movzwl	-2(%rbp), %eax
-	cmpw	-26(%rbp), %ax
+	movl	-4(%rbp), %eax
+	cmpl	-28(%rbp), %eax
 	jb	.L18
 .L16:
 	movl	-536(%rbp), %edx
@@ -289,9 +286,9 @@ loadAsset:
 	movq	-904(%rbp), %rax
 	movq	-888(%rbp), %rdx
 	movq	%rdx, (%rax)
-	movzwl	-26(%rbp), %edx
 	movl	-564(%rbp), %eax
-	imull	%eax, %edx
+	imull	-28(%rbp), %eax
+	movl	%eax, %edx
 	movq	-904(%rbp), %rax
 	movl	%edx, 24(%rax)
 	leaq	-704(%rbp), %rax

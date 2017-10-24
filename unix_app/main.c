@@ -22,7 +22,7 @@ int main(void)
     struct asset new_asset;
     loadAsset("jpg","../assets/current/brick1.jpg", &new_asset);
     // printf("%p\n",&new_asset.data);
-    // printf("%p\n",&new_asset.data[0]);
+    // printf("%d\n",new_asset.data[0]);
     // printf("%p\n",&new_asset.data[1]);
 
     //connect to xserv
