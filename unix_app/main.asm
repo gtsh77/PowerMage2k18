@@ -22,6 +22,19 @@ objNames:
 	.zero	33
 	.string	"../assets/unix/wlppr_tan.jpg"
 	.zero	35
+	.globl	objIds
+	.align 8
+	.type	objIds, @object
+	.size	objIds, 8
+objIds:
+	.byte	10
+	.byte	11
+	.byte	12
+	.byte	13
+	.byte	14
+	.byte	15
+	.byte	16
+	.byte	17
 	.comm	e,8,8
 	.comm	l,8,8
 	.comm	f,8,8
@@ -173,7 +186,7 @@ loadTileMap:
 	.size	loadTileMap, .-loadTileMap
 	.section	.rodata
 .LC3:
-	.string	"texture %d: %p %d(%s)\n"
+	.string	"path %s\n"
 	.text
 	.globl	seekAssets
 	.type	seekAssets, @function
@@ -187,36 +200,22 @@ seekAssets:
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
 	movq	e(%rip), %rax
-	movq	%rax, f(%rip)
-	movq	f(%rip), %rax
-	movq	%rax, l(%rip)
-	movw	$0, -2(%rbp)
+	movq	%rax, -8(%rbp)
 	jmp	.L13
 .L14:
-	movq	l(%rip), %rax
-	movq	24(%rax), %rsi
-	movq	l(%rip), %rax
-	movq	40(%rax), %rax
-	movzbl	(%rax), %eax
-	movzbl	%al, %ecx
-	movq	l(%rip), %rdx
-	movzwl	-2(%rbp), %eax
-	movq	%rsi, %r8
-	movl	%eax, %esi
+	movq	-8(%rbp), %rax
+	movq	24(%rax), %rax
+	movq	%rax, %rsi
 	movl	$.LC3, %edi
 	movl	$0, %eax
 	call	printf
-	movq	l(%rip), %rax
+	movq	-8(%rbp), %rax
 	movq	56(%rax), %rax
-	movq	%rax, l(%rip)
-	movzwl	-2(%rbp), %eax
-	addl	$1, %eax
-	movw	%ax, -2(%rbp)
+	movq	%rax, -8(%rbp)
 .L13:
-	cmpw	$7, -2(%rbp)
-	jbe	.L14
-	movq	l(%rip), %rax
-	movq	%rax, f(%rip)
+	movq	f(%rip), %rax
+	cmpq	%rax, -8(%rbp)
+	jb	.L14
 	nop
 	leave
 	.cfi_def_cfa 7, 8
@@ -253,6 +252,11 @@ loadAssets:
 	salq	$6, %rdx
 	addq	$objNames, %rdx
 	movq	%rdx, 24(%rax)
+	movq	l(%rip), %rax
+	movzbl	-17(%rbp), %edx
+	movslq	%edx, %rdx
+	movzbl	objIds(%rdx), %edx
+	movb	%dl, (%rax)
 	movq	l(%rip), %rax
 	movq	%rax, %rdi
 	call	loadAssetItem
@@ -686,7 +690,6 @@ main:
 	movl	$.LC9, %edi
 	call	loadTileMap
 	call	loadAssets
-	call	seekAssets
 	movl	$0, %edi
 	call	XOpenDisplay
 	movq	%rax, session(%rip)

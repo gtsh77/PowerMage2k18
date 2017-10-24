@@ -40,7 +40,8 @@ struct
     dbyte length;
 } level;
 
-#define GAMEOBJECTS 8
+//ingame assets count, should be equal to objNames & objIds length
+#define GAMEOBJECTS 8 
 
 char objNames[GAMEOBJECTS][64] = 
 {
@@ -52,6 +53,18 @@ char objNames[GAMEOBJECTS][64] =
     "../assets/unix/frenchfloor_wood1.jpg",
     "../assets/unix/garagefloor.jpg",
     "../assets/unix/wlppr_tan.jpg"
+};
+
+byte objIds[GAMEOBJECTS] = 
+{
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
 };
 
 struct asset

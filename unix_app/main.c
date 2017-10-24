@@ -24,9 +24,9 @@ int main(void)
     loadTileMap("../maps/unix1.json.bin");
     //load and map textures into memory
     loadAssets();
-    seekAssets();
+    //seekAssets();
     //connect to xserv
-    session = XOpenDisplay(NULL);
+    session = XOpenDisplay(NULL);   
     if (session == NULL)
     {
         fprintf(stderr, "Cannot open server\n");

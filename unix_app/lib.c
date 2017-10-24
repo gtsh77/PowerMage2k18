@@ -36,18 +36,16 @@ void loadTileMap(char *path)
 
 void seekAssets(void)
 {
-	dbyte i;
-	l = f = e;
-    for(i=0;i<GAMEOBJECTS;i++)
-    {
-        printf("texture %d: %p %d(%s)\n",i,l,l->data[0],l->path);
-        l=l->n;
-    }
-    f = l;
+	struct asset *cur = e;
+	while(cur < f)
+	{
+		printf("path %s\n",cur->path);
+		cur = cur->n;
+	}
     return;
 }
 
-void loadAssets(void)
+void loadAssets()
 {
 	byte i;
     e = (struct asset*)malloc(sizeof(struct asset));
@@ -55,10 +53,10 @@ void loadAssets(void)
     for(i=0;i<GAMEOBJECTS;i++)
     {
         l->path = objNames[i];
+        l->id = objIds[i];
         loadAssetItem(l);
-        //printf("texture: %d %p\n",i,l);
         l->n=(struct asset*)malloc(sizeof(struct asset));
-        l=l->n;        
+        l=l->n;
     }
     f = l;
     return;
