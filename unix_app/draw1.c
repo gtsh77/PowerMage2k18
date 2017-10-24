@@ -84,7 +84,7 @@ void draw1(void)
 
 	//DrawRectangle(session, window, gc, 0, 0, FIELDW, FIELDH/2);	
 	playerIndex = getPlayer(level.map,level.length);
-	printf("%d\n",playerIndex);
+	//printf("%d\n",playerIndex);
 	
 
 	//
@@ -97,7 +97,7 @@ void draw1(void)
 	// sleep(1);
 	end = getCycles();
 	//printf("%ld\n",(long_u)(end-start));
-	printf("Render: %.9f\n",(double)(getCycles()-start)/3.5e9);
+	printf("Render: %.9f\n",(double)(end-start)/3.5e9);
 	return;
 
 }

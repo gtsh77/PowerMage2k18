@@ -4,6 +4,9 @@
 #include <string.h>
 #include <unistd.h>
 #include "jpeglib.h"
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #define FIELDW 640
 #define FIELDH 480
@@ -26,7 +29,7 @@ extern byte cur_screen;
 extern GC gc;
 extern int_u gc_mask;
 extern XGCValues gc_val;
-extern long_u start, end;
+extern long_u start, end, totals, totale;
 extern dbyte playerIndex;
 extern Visual *visual;
 extern Colormap colormap;
@@ -70,4 +73,4 @@ dbyte getPlayer(byte *, dbyte);
 void loadTileMap(char *);
 void seekAssets(void);
 void loadAssets(void);
-void loadAssetItem(char *, struct asset *);
+void loadAssetItem(struct asset *);

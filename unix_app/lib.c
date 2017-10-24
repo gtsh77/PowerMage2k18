@@ -27,8 +27,8 @@ void loadTileMap(char *path)
 	    level.map = (byte *)malloc(sizeof(byte)*(binlen + 1));
 	    fread(level.map,binlen,1,bin);
 	    level.length = binlen;
-	    fclose(bin);  
-	    	
+	    fclose(bin);
+	    printf("world: %p (%d)\n",level.map, level.length);   	
 	}
 	return;
 
@@ -55,7 +55,8 @@ void loadAssets(void)
     for(i=0;i<GAMEOBJECTS;i++)
     {
         l->path = objNames[i];
-        loadAssetItem("jpg",l);
+        loadAssetItem(l);
+        //printf("texture: %d %p\n",i,l);
         l->n=(struct asset*)malloc(sizeof(struct asset));
         l=l->n;        
     }
@@ -63,9 +64,10 @@ void loadAssets(void)
     return;
 }
 
-void loadAssetItem(char *type, struct asset *asset)
+void loadAssetItem(struct asset *asset)
 {
-	if(type == "jpg")
+	char *type = strrchr(asset->path,'.') + 1;
+	if(strcmp(type,"jpg") == 0)
 	{
 		byte **buffer;
 		int_u i, buffer_length;
@@ -81,7 +83,7 @@ void loadAssetItem(char *type, struct asset *asset)
 			jpeg_stdio_src(&cinfo, file);
 			jpeg_read_header(&cinfo, TRUE);
 			jpeg_start_decompress(&cinfo);
-			buffer = (byte **)malloc(sizeof(byte)*cinfo.output_height);
+			buffer = (byte **)malloc(sizeof(byte));
 			buffer_length = cinfo.output_width*cinfo.output_components;
 			buffer[0] = (byte *)malloc(sizeof(byte)*buffer_length);
 			asset->data = (byte *)malloc(sizeof(byte)*buffer_length*cinfo.output_height);
@@ -101,8 +103,11 @@ void loadAssetItem(char *type, struct asset *asset)
 			asset->data_length = buffer_length*cinfo.output_scanline;
 			jpeg_finish_decompress(&cinfo);
 			jpeg_destroy_decompress(&cinfo);
-			fclose(file);		
+			free(buffer[0]);
+			free(buffer);
+			fclose(file);
 		}
 	}
+	else printf("error: unsupported extension: %s\n",asset->path);
 	return;
 }

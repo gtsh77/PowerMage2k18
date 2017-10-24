@@ -9,16 +9,22 @@ byte cur_screen;
 GC gc;
 int_u gc_mask;
 XGCValues gc_val;
-long_u start, end;
+long_u start, end, totals, totale;
 Visual *visual;
 Colormap colormap;
+struct rusage rusage;
+
 
 int main(void)
-{
+{   
+    //start bench
+    totals = getCycles();
+    
     //load level from tct's binary output into memory
     loadTileMap("../maps/unix1.json.bin");
     //load and map textures into memory
     loadAssets();
+    seekAssets();
     //connect to xserv
     session = XOpenDisplay(NULL);
     if (session == NULL)
@@ -46,7 +52,14 @@ int main(void)
     {
         XNextEvent(session, &cur_event); 
         //draw
-        if (cur_event.type == Expose) draw1();
+        if (cur_event.type == Expose)
+        {
+            draw1();
+            totale = getCycles();
+            getrusage(0, &rusage);
+            printf("Total: %.9f\n",(double)(totale-totals)/3.5e9);
+            printf("Memory: %d\n",rusage.ru_maxrss);
+        }
         //exit point
         else if (cur_event.type == KeyPress)
             break;
@@ -58,6 +71,6 @@ int main(void)
     //sleep(5);
  
     //bb to xserv
-    XCloseDisplay(session); 
+    XCloseDisplay(session);
     return 0;
  }
