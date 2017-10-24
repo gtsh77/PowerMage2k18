@@ -25,6 +25,11 @@ int main(void)
     //load and map textures into memory
     loadAssets();
     //seekAssets();
+
+    //struct asset *test;
+    //getAssetById(15,&test);
+    //printf("%p\n",test);
+    
     //connect to xserv
     session = XOpenDisplay(NULL);   
     if (session == NULL)

@@ -39,8 +39,23 @@ void seekAssets(void)
 	struct asset *cur = e;
 	while(cur < f)
 	{
-		printf("path %s\n",cur->path);
+		printf("env %d\n",cur->id);
 		cur = cur->n;
+	}
+    return;
+}
+
+void getAssetById(byte id, struct asset **link)
+{
+	struct asset *cur = e;
+	while(cur < f)
+	{
+		if(cur->id == id)
+		{
+			*link = cur;
+			cur = f;
+		}
+		else cur = cur->n;
 	}
     return;
 }

@@ -186,7 +186,7 @@ loadTileMap:
 	.size	loadTileMap, .-loadTileMap
 	.section	.rodata
 .LC3:
-	.string	"path %s\n"
+	.string	"env %d\n"
 	.text
 	.globl	seekAssets
 	.type	seekAssets, @function
@@ -204,8 +204,9 @@ seekAssets:
 	jmp	.L13
 .L14:
 	movq	-8(%rbp), %rax
-	movq	24(%rax), %rax
-	movq	%rax, %rsi
+	movzbl	(%rax), %eax
+	movzbl	%al, %eax
+	movl	%eax, %esi
 	movl	$.LC3, %edi
 	movl	$0, %eax
 	call	printf
@@ -223,10 +224,52 @@ seekAssets:
 	.cfi_endproc
 .LFE26:
 	.size	seekAssets, .-seekAssets
+	.globl	getAssetById
+	.type	getAssetById, @function
+getAssetById:
+.LFB27:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	%edi, %eax
+	movq	%rsi, -32(%rbp)
+	movb	%al, -20(%rbp)
+	movq	e(%rip), %rax
+	movq	%rax, -8(%rbp)
+	jmp	.L17
+.L19:
+	movq	-8(%rbp), %rax
+	movzbl	(%rax), %eax
+	cmpb	-20(%rbp), %al
+	jne	.L18
+	movq	-32(%rbp), %rax
+	movq	-8(%rbp), %rdx
+	movq	%rdx, (%rax)
+	movq	f(%rip), %rax
+	movq	%rax, -8(%rbp)
+	jmp	.L17
+.L18:
+	movq	-8(%rbp), %rax
+	movq	56(%rax), %rax
+	movq	%rax, -8(%rbp)
+.L17:
+	movq	f(%rip), %rax
+	cmpq	%rax, -8(%rbp)
+	jb	.L19
+	nop
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE27:
+	.size	getAssetById, .-getAssetById
 	.globl	loadAssets
 	.type	loadAssets, @function
 loadAssets:
-.LFB27:
+.LFB28:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -244,8 +287,8 @@ loadAssets:
 	movq	f(%rip), %rax
 	movq	%rax, l(%rip)
 	movb	$0, -17(%rbp)
-	jmp	.L17
-.L18:
+	jmp	.L22
+.L23:
 	movq	l(%rip), %rax
 	movzbl	-17(%rbp), %edx
 	movslq	%edx, %rdx
@@ -270,9 +313,9 @@ loadAssets:
 	movzbl	-17(%rbp), %eax
 	addl	$1, %eax
 	movb	%al, -17(%rbp)
-.L17:
+.L22:
 	cmpb	$7, -17(%rbp)
-	jbe	.L18
+	jbe	.L23
 	movq	l(%rip), %rax
 	movq	%rax, f(%rip)
 	nop
@@ -282,7 +325,7 @@ loadAssets:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE27:
+.LFE28:
 	.size	loadAssets, .-loadAssets
 	.section	.rodata
 .LC4:
@@ -297,7 +340,7 @@ loadAssets:
 	.globl	loadAssetItem
 	.type	loadAssetItem, @function
 loadAssetItem:
-.LFB28:
+.LFB29:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -318,7 +361,7 @@ loadAssetItem:
 	movq	%rax, %rdi
 	call	strcmp
 	testl	%eax, %eax
-	jne	.L21
+	jne	.L26
 	leaq	-880(%rbp), %rax
 	movq	%rax, %rdi
 	call	jpeg_std_error
@@ -335,15 +378,15 @@ loadAssetItem:
 	call	fopen
 	movq	%rax, -24(%rbp)
 	cmpq	$0, -24(%rbp)
-	jne	.L22
+	jne	.L27
 	movq	-888(%rbp), %rax
 	movq	24(%rax), %rax
 	movq	%rax, %rsi
 	movl	$.LC5, %edi
 	movl	$0, %eax
 	call	printf
-	jmp	.L20
-.L22:
+	jmp	.L25
+.L27:
 	movq	-24(%rbp), %rdx
 	leaq	-704(%rbp), %rax
 	movq	%rdx, %rsi
@@ -389,8 +432,8 @@ loadAssetItem:
 	movq	-888(%rbp), %rax
 	movq	-16(%rbp), %rdx
 	movq	%rdx, 16(%rax)
-	jmp	.L24
-.L27:
+	jmp	.L29
+.L32:
 	movq	-32(%rbp), %rcx
 	leaq	-704(%rbp), %rax
 	movl	$1, %edx
@@ -398,8 +441,8 @@ loadAssetItem:
 	movq	%rax, %rdi
 	call	jpeg_read_scanlines
 	movl	$0, -4(%rbp)
-	jmp	.L25
-.L26:
+	jmp	.L30
+.L31:
 	movq	-888(%rbp), %rax
 	movq	40(%rax), %rdx
 	movl	-536(%rbp), %eax
@@ -443,15 +486,15 @@ loadAssetItem:
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
 	addl	$3, -4(%rbp)
-.L25:
+.L30:
 	movl	-4(%rbp), %eax
 	cmpl	-36(%rbp), %eax
-	jb	.L26
-.L24:
+	jb	.L31
+.L29:
 	movl	-536(%rbp), %edx
 	movl	-564(%rbp), %eax
 	cmpl	%eax, %edx
-	jb	.L27
+	jb	.L32
 	movl	-536(%rbp), %eax
 	imull	-36(%rbp), %eax
 	movl	%eax, %edx
@@ -473,8 +516,8 @@ loadAssetItem:
 	movq	-24(%rbp), %rax
 	movq	%rax, %rdi
 	call	fclose
-	jmp	.L20
-.L21:
+	jmp	.L25
+.L26:
 	movq	-888(%rbp), %rax
 	movq	24(%rax), %rax
 	movq	%rax, %rsi
@@ -482,12 +525,12 @@ loadAssetItem:
 	movl	$0, %eax
 	call	printf
 	nop
-.L20:
+.L25:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE28:
+.LFE29:
 	.size	loadAssetItem, .-loadAssetItem
 	.comm	playerIndex,2,2
 	.section	.rodata
@@ -497,7 +540,7 @@ loadAssetItem:
 	.globl	draw1
 	.type	draw1, @function
 draw1:
-.LFB29:
+.LFB30:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -626,11 +669,11 @@ draw1:
 	subq	%rax, %rdx
 	movq	%rdx, %rax
 	testq	%rax, %rax
-	js	.L31
+	js	.L36
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
-	jmp	.L32
-.L31:
+	jmp	.L37
+.L36:
 	movq	%rax, %rdx
 	shrq	%rdx
 	andl	$1, %eax
@@ -638,7 +681,7 @@ draw1:
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rdx, %xmm0
 	addsd	%xmm0, %xmm0
-.L32:
+.L37:
 	movsd	.LC7(%rip), %xmm1
 	divsd	%xmm1, %xmm0
 	movl	$.LC8, %edi
@@ -649,7 +692,7 @@ draw1:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE29:
+.LFE30:
 	.size	draw1, .-draw1
 	.comm	session,8,8
 	.comm	window,8,8
@@ -678,7 +721,7 @@ draw1:
 	.globl	main
 	.type	main, @function
 main:
-.LFB30:
+.LFB31:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -695,7 +738,7 @@ main:
 	movq	%rax, session(%rip)
 	movq	session(%rip), %rax
 	testq	%rax, %rax
-	jne	.L35
+	jne	.L40
 	movq	__stderrp(%rip), %rax
 	movq	%rax, %rcx
 	movl	$19, %edx
@@ -704,7 +747,7 @@ main:
 	call	fwrite
 	movl	$1, %edi
 	call	exit
-.L35:
+.L40:
 	movq	session(%rip), %rax
 	movl	224(%rax), %eax
 	movb	%al, cur_screen(%rip)
@@ -756,14 +799,14 @@ main:
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
 	call	XFlush
-.L41:
+.L46:
 	movq	session(%rip), %rax
 	movl	$cur_event, %esi
 	movq	%rax, %rdi
 	call	XNextEvent
 	movl	cur_event(%rip), %eax
 	cmpl	$12, %eax
-	jne	.L36
+	jne	.L41
 	call	draw1
 	call	getCycles
 	movq	%rax, totale(%rip)
@@ -775,11 +818,11 @@ main:
 	subq	%rax, %rdx
 	movq	%rdx, %rax
 	testq	%rax, %rax
-	js	.L37
+	js	.L42
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
-	jmp	.L38
-.L37:
+	jmp	.L43
+.L42:
 	movq	%rax, %rdx
 	shrq	%rdx
 	andl	$1, %eax
@@ -787,7 +830,7 @@ main:
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rdx, %xmm0
 	addsd	%xmm0, %xmm0
-.L38:
+.L43:
 	movsd	.LC7(%rip), %xmm1
 	divsd	%xmm1, %xmm0
 	movl	$.LC11, %edi
@@ -798,13 +841,13 @@ main:
 	movl	$.LC12, %edi
 	movl	$0, %eax
 	call	printf
-	jmp	.L41
-.L36:
+	jmp	.L46
+.L41:
 	movl	cur_event(%rip), %eax
 	cmpl	$2, %eax
-	je	.L44
-	jmp	.L41
-.L44:
+	je	.L49
+	jmp	.L46
+.L49:
 	nop
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
@@ -814,7 +857,7 @@ main:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE30:
+.LFE31:
 	.size	main, .-main
 	.section	.rodata
 	.align 8

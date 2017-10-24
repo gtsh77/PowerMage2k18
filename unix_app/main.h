@@ -87,3 +87,4 @@ void loadTileMap(char *);
 void seekAssets(void);
 void loadAssets(void);
 void loadAssetItem(struct asset *);
+void getAssetById(byte, struct asset **);
