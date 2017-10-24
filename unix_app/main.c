@@ -1,5 +1,5 @@
 #include "main.h"
-#include "draw1.c"
+#include "draw3d.c"
 
 //base vars
 Display *session;
@@ -12,8 +12,6 @@ XGCValues gc_val;
 long_u start, end, totals, totale;
 Visual *visual;
 Colormap colormap;
-struct rusage rusage;
-
 
 int main(void)
 {   
@@ -55,11 +53,9 @@ int main(void)
         //draw
         if (cur_event.type == Expose)
         {
-            draw1();
-            totale = getCycles();
-            getrusage(0, &rusage);
-            printf("Total: %.9f\n",(double)(totale-totals)/3.5e9);
-            printf("Memory: %d\n",rusage.ru_maxrss);
+            draw3d();
+            //finishBench();
+
         }
         //exit point
         else if (cur_event.type == KeyPress)

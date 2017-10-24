@@ -454,9 +454,8 @@ loadAssetItem:
 .L31:
 	movq	-904(%rbp), %rax
 	movq	40(%rax), %rax
+	movl	-48(%rbp), %ecx
 	movl	-12(%rbp), %edx
-	leal	0(,%rdx,4), %ecx
-	movl	-48(%rbp), %edx
 	addl	%ecx, %edx
 	movl	%edx, %edx
 	addq	%rax, %rdx
@@ -470,9 +469,8 @@ loadAssetItem:
 	movb	%al, (%rdx)
 	movq	-904(%rbp), %rax
 	movq	40(%rax), %rax
+	movl	-48(%rbp), %ecx
 	movl	-12(%rbp), %edx
-	leal	0(,%rdx,4), %ecx
-	movl	-48(%rbp), %edx
 	addl	%ecx, %edx
 	addl	$1, %edx
 	movl	%edx, %edx
@@ -487,9 +485,8 @@ loadAssetItem:
 	movb	%al, (%rdx)
 	movq	-904(%rbp), %rax
 	movq	40(%rax), %rax
+	movl	-48(%rbp), %ecx
 	movl	-12(%rbp), %edx
-	leal	0(,%rdx,4), %ecx
-	movl	-48(%rbp), %edx
 	addl	%ecx, %edx
 	addl	$2, %edx
 	movl	%edx, %edx
@@ -501,7 +498,7 @@ loadAssetItem:
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
 	addl	$3, -4(%rbp)
-	addl	$1, -12(%rbp)
+	addl	$4, -12(%rbp)
 .L30:
 	movl	-4(%rbp), %eax
 	cmpl	-44(%rbp), %eax

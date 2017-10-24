@@ -2,7 +2,7 @@
 
 dbyte playerIndex;
 
-void draw1(void)
+void draw3d(void)
 {
 	start = getCycles();
 	//
@@ -97,13 +97,8 @@ void draw1(void)
 	// === BENCH STUFF
 	//
 
-	//get core freq
-	// long_u start, end;
-	// start = getCycles();
-	// sleep(1);
-	end = getCycles();
-	//printf("%ld\n",(long_u)(end-start));
-	printf("Render: %.9f\n",(double)(end-start)/3.5e9);
+	// end = getCycles();
+	// printf("Render: %.9f\n",(double)(end-start)/3.5e9);
 	return;
 
 }

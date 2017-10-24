@@ -83,8 +83,12 @@ struct asset
 //libs: protos
 long_u getCycles(void);
 dbyte getPlayer(byte *, dbyte);
+void finishBench(void);
 void loadTileMap(char *);
 void seekAssets(void);
 void loadAssets(void);
 void loadAssetItem(struct asset *);
 void getAssetById(byte, struct asset **);
+
+//mainframes
+void draw3d(void);

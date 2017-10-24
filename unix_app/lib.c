@@ -28,7 +28,7 @@ void loadTileMap(char *path)
 	    fread(level.map,binlen,1,bin);
 	    level.length = binlen;
 	    fclose(bin);
-	    printf("world: %p (%d)\n",level.map, level.length);   	
+	    //printf("world: %p (%d)\n",level.map, level.length);   	
 	}
 	return;
 
@@ -110,12 +110,12 @@ void loadAssetItem(struct asset *asset)
 			{
 				scanlinelength = cinfo.output_width*index*4;
 				(void)jpeg_read_scanlines(&cinfo, buffer,1);
-				for(i=0,k=0;i<buffer_length;i+=3,k++)
+				for(i=0,k=0;i<buffer_length;i+=3,k+=4)
 				{
 					//24 rgb => 32bgra ?? x11 case
-					asset->data[scanlinelength + (k* 4)] = buffer[0][i + 2];
-					asset->data[scanlinelength + (k* 4) + 1] = buffer[0][i + 1];
-					asset->data[scanlinelength + (k* 4) + 2] = buffer[0][i];
+					asset->data[scanlinelength + k] = buffer[0][i + 2];
+					asset->data[scanlinelength + k + 1] = buffer[0][i + 1];
+					asset->data[scanlinelength + k + 2] = buffer[0][i];
 				}
 			}
 			asset->data_length = cinfo.output_width*cinfo.output_height*4;
@@ -128,4 +128,15 @@ void loadAssetItem(struct asset *asset)
 	}
 	else printf("error: unsupported extension: %s\n",asset->path);
 	return;
+}
+
+void finishBench(void)
+{
+	struct rusage rusage;
+    totale = getCycles();
+    getrusage(0, &rusage);
+    printf("\n\n======== BENCHS ========\n\n");
+    printf("Total: %.9f\n",(double)(totale-totals)/3.5e9);
+    printf("Memory: %d\n",rusage.ru_maxrss);
+    printf("\n======== BENCHS END ========\n");
 }
