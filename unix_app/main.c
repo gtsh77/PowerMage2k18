@@ -15,16 +15,10 @@ Colormap colormap;
 
 int main(void)
 {
-    //load level
+    //load level from tct's binary output into memory
     loadTileMap("../maps/unix1.json.bin");
-
-    //load texture
-    struct asset new_asset;
-    loadAsset("jpg","../assets/current/brick1.jpg", &new_asset);
-    // printf("%p\n",&new_asset.data);
-    // printf("%d\n",new_asset.data[0]);
-    // printf("%p\n",&new_asset.data[1]);
-
+    //load and map textures into memory
+    loadAssets();
     //connect to xserv
     session = XOpenDisplay(NULL);
     if (session == NULL)

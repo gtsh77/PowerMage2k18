@@ -34,7 +34,36 @@ void loadTileMap(char *path)
 
 }
 
-void loadAsset(char *type, char *path, struct asset *ptr)
+void seekAssets(void)
+{
+	dbyte i;
+	l = f = e;
+    for(i=0;i<GAMEOBJECTS;i++)
+    {
+        printf("texture %d: %p %d(%s)\n",i,l,l->data[0],l->path);
+        l=l->n;
+    }
+    f = l;
+    return;
+}
+
+void loadAssets(void)
+{
+	byte i;
+    e = (struct asset*)malloc(sizeof(struct asset));
+    l = f = e;
+    for(i=0;i<GAMEOBJECTS;i++)
+    {
+        l->path = objNames[i];
+        loadAssetItem("jpg",l);
+        l->n=(struct asset*)malloc(sizeof(struct asset));
+        l=l->n;        
+    }
+    f = l;
+    return;
+}
+
+void loadAssetItem(char *type, struct asset *asset)
 {
 	if(type == "jpg")
 	{
@@ -44,9 +73,9 @@ void loadAsset(char *type, char *path, struct asset *ptr)
 		struct jpeg_decompress_struct cinfo;
 		struct jpeg_error_mgr jerr;
 		cinfo.err = jpeg_std_error(&jerr);
-		jpeg_create_decompress(&cinfo);	
-		file = fopen(path, "rb");
-		if(!file) printf("error: can't read asset file: %s\n",path);
+		jpeg_create_decompress(&cinfo);
+		file = fopen(asset->path, "rb");
+		if(!file) printf("error: can't read asset file: %s\n",asset->path);
 		else 
 		{
 			jpeg_stdio_src(&cinfo, file);
@@ -55,19 +84,21 @@ void loadAsset(char *type, char *path, struct asset *ptr)
 			buffer = (byte **)malloc(sizeof(byte)*cinfo.output_height);
 			buffer_length = cinfo.output_width*cinfo.output_components;
 			buffer[0] = (byte *)malloc(sizeof(byte)*buffer_length);
-			ptr->data = (byte *)malloc(sizeof(byte)*buffer_length*cinfo.output_height);
+			asset->data = (byte *)malloc(sizeof(byte)*buffer_length*cinfo.output_height);
+			asset->width = cinfo.output_width;
+			asset->height = cinfo.output_height;
+			asset->type = type;
 			while (cinfo.output_scanline < cinfo.output_height)
 			{
 				(void)jpeg_read_scanlines(&cinfo, buffer, 1);
 				for(i=0;i<buffer_length;i+=3)
 				{
-					ptr->data[cinfo.output_scanline * i + 0] = buffer[0][i];
-					ptr->data[cinfo.output_scanline * i + 1] = buffer[0][i + 1];
-					ptr->data[cinfo.output_scanline * i + 2] = buffer[0][i + 2];
+					asset->data[cinfo.output_scanline * i + 0] = buffer[0][i];
+					asset->data[cinfo.output_scanline * i + 1] = buffer[0][i + 1];
+					asset->data[cinfo.output_scanline * i + 2] = buffer[0][i + 2];
 				}
 			}
-			ptr->type = type;
-			ptr->length = buffer_length*cinfo.output_height;
+			asset->data_length = buffer_length*cinfo.output_scanline;
 			jpeg_finish_decompress(&cinfo);
 			jpeg_destroy_decompress(&cinfo);
 			fclose(file);		

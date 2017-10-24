@@ -37,41 +37,37 @@ struct
     dbyte length;
 } level;
 
-struct asset
+#define GAMEOBJECTS 8
+
+char objNames[GAMEOBJECTS][64] = 
 {
-	char *type;
-    char *name;
-    byte *data;
-    int_u length;
+    "../assets/unix/brick1.jpg",
+    "../assets/unix/frenchdoor_wood1.jpg",
+    "../assets/unix/interiorwall_set2chrrl.jpg",
+    "../assets/unix/interiorwall_set3chrrl.jpg",
+    "../assets/unix/floor4.jpg",
+    "../assets/unix/frenchfloor_wood1.jpg",
+    "../assets/unix/garagefloor.jpg",
+    "../assets/unix/wlppr_tan.jpg"
 };
 
-struct gameObj
+struct asset
 {
-	char * name;
-	byte id;
-	struct gameObj *n;
-} gameObject[10];
-
-// enum gameObjects 
-// {
-//     z = 0,
-//     player = z + 1,
-//     strongwall = z + 10,
-//     easywall = z + 20,
-//     lockeddoor = z + 30,
-//     key = z + 40,
-//     item1 = z + 50,
-//     item2 = z + 51,
-//     item3 = z + 52,
-//     mana_potion = z + 53,
-//     portal = z + 60,
-//     horde_mage = z + 101,
-//     horde_grunt = z + 102,
-//     allience_vendor = z + 201
-// };
+    byte id;
+    char *name;
+    char *type;
+    char *path;
+    dbyte width;
+    dbyte height;
+    byte *data;
+    int_u data_length;
+    struct asset *n, *p;
+} *e, *l, *f;
 
 //libs: protos
 long_u getCycles(void);
 dbyte getPlayer(byte *, dbyte);
 void loadTileMap(char *);
-void loadAsset(char *, char *, struct asset *);
+void seekAssets(void);
+void loadAssets(void);
+void loadAssetItem(char *, struct asset *);
