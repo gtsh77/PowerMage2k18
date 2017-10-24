@@ -347,39 +347,39 @@ loadAssetItem:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$896, %rsp
-	movq	%rdi, -888(%rbp)
-	movq	-888(%rbp), %rax
+	subq	$912, %rsp
+	movq	%rdi, -904(%rbp)
+	movq	-904(%rbp), %rax
 	movq	24(%rax), %rax
 	movl	$46, %esi
 	movq	%rax, %rdi
 	call	strrchr
 	addq	$1, %rax
-	movq	%rax, -16(%rbp)
-	movq	-16(%rbp), %rax
+	movq	%rax, -24(%rbp)
+	movq	-24(%rbp), %rax
 	movl	$.LC4, %esi
 	movq	%rax, %rdi
 	call	strcmp
 	testl	%eax, %eax
 	jne	.L26
-	leaq	-880(%rbp), %rax
+	leaq	-896(%rbp), %rax
 	movq	%rax, %rdi
 	call	jpeg_std_error
-	movq	%rax, -704(%rbp)
-	leaq	-704(%rbp), %rax
+	movq	%rax, -720(%rbp)
+	leaq	-720(%rbp), %rax
 	movl	$664, %edx
 	movl	$90, %esi
 	movq	%rax, %rdi
 	call	jpeg_CreateDecompress
-	movq	-888(%rbp), %rax
+	movq	-904(%rbp), %rax
 	movq	24(%rax), %rax
 	movl	$.LC0, %esi
 	movq	%rax, %rdi
 	call	fopen
-	movq	%rax, -24(%rbp)
-	cmpq	$0, -24(%rbp)
+	movq	%rax, -32(%rbp)
+	cmpq	$0, -32(%rbp)
 	jne	.L27
-	movq	-888(%rbp), %rax
+	movq	-904(%rbp), %rax
 	movq	24(%rax), %rax
 	movq	%rax, %rsi
 	movl	$.LC5, %edi
@@ -387,97 +387,80 @@ loadAssetItem:
 	call	printf
 	jmp	.L25
 .L27:
-	movq	-24(%rbp), %rdx
-	leaq	-704(%rbp), %rax
+	movq	-32(%rbp), %rdx
+	leaq	-720(%rbp), %rax
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	call	jpeg_stdio_src
-	leaq	-704(%rbp), %rax
+	leaq	-720(%rbp), %rax
 	movl	$1, %esi
 	movq	%rax, %rdi
 	call	jpeg_read_header
-	leaq	-704(%rbp), %rax
+	leaq	-720(%rbp), %rax
 	movq	%rax, %rdi
 	call	jpeg_start_decompress
 	movl	$1, %edi
 	call	malloc
-	movq	%rax, -32(%rbp)
-	movl	-568(%rbp), %eax
-	movl	-556(%rbp), %edx
-	imull	%edx, %eax
-	movl	%eax, -36(%rbp)
-	movl	-36(%rbp), %eax
+	movq	%rax, -40(%rbp)
+	movl	-584(%rbp), %edx
+	movl	%edx, %eax
+	addl	%eax, %eax
+	addl	%edx, %eax
+	movl	%eax, -44(%rbp)
+	movl	-44(%rbp), %eax
 	movq	%rax, %rdi
 	call	malloc
 	movq	%rax, %rdx
-	movq	-32(%rbp), %rax
+	movq	-40(%rbp), %rax
 	movq	%rdx, (%rax)
-	movl	-36(%rbp), %eax
-	movl	-564(%rbp), %edx
-	movl	%edx, %edx
+	movl	-584(%rbp), %eax
+	movl	%eax, %edx
+	movl	-580(%rbp), %eax
+	movl	%eax, %eax
 	imulq	%rdx, %rax
+	salq	$2, %rax
 	movq	%rax, %rdi
 	call	malloc
 	movq	%rax, %rdx
-	movq	-888(%rbp), %rax
+	movq	-904(%rbp), %rax
 	movq	%rdx, 40(%rax)
-	movl	-568(%rbp), %eax
+	movl	-584(%rbp), %eax
 	movl	%eax, %edx
-	movq	-888(%rbp), %rax
+	movq	-904(%rbp), %rax
 	movw	%dx, 32(%rax)
-	movl	-564(%rbp), %eax
+	movl	-580(%rbp), %eax
 	movl	%eax, %edx
-	movq	-888(%rbp), %rax
+	movq	-904(%rbp), %rax
 	movw	%dx, 34(%rax)
-	movq	-888(%rbp), %rax
-	movq	-16(%rbp), %rdx
+	movq	-904(%rbp), %rax
+	movq	-24(%rbp), %rdx
 	movq	%rdx, 16(%rax)
+	movl	$0, -8(%rbp)
 	jmp	.L29
 .L32:
-	movq	-32(%rbp), %rcx
-	leaq	-704(%rbp), %rax
+	movl	-584(%rbp), %eax
+	imull	-8(%rbp), %eax
+	sall	$2, %eax
+	movl	%eax, -48(%rbp)
+	movq	-40(%rbp), %rcx
+	leaq	-720(%rbp), %rax
 	movl	$1, %edx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	jpeg_read_scanlines
 	movl	$0, -4(%rbp)
+	movl	$0, -12(%rbp)
 	jmp	.L30
 .L31:
-	movq	-888(%rbp), %rax
-	movq	40(%rax), %rdx
-	movl	-536(%rbp), %eax
-	imull	-4(%rbp), %eax
-	movl	%eax, %eax
+	movq	-904(%rbp), %rax
+	movq	40(%rax), %rax
+	movl	-12(%rbp), %edx
+	leal	0(,%rdx,4), %ecx
+	movl	-48(%rbp), %edx
+	addl	%ecx, %edx
+	movl	%edx, %edx
 	addq	%rax, %rdx
-	movq	-32(%rbp), %rax
-	movq	(%rax), %rcx
-	movl	-4(%rbp), %eax
-	addq	%rcx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, (%rdx)
-	movq	-888(%rbp), %rax
-	movq	40(%rax), %rdx
-	movl	-536(%rbp), %eax
-	imull	-4(%rbp), %eax
-	addl	$1, %eax
-	movl	%eax, %eax
-	addq	%rax, %rdx
-	movq	-32(%rbp), %rax
-	movq	(%rax), %rax
-	movl	-4(%rbp), %ecx
-	addl	$1, %ecx
-	movl	%ecx, %ecx
-	addq	%rcx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, (%rdx)
-	movq	-888(%rbp), %rax
-	movq	40(%rax), %rdx
-	movl	-536(%rbp), %eax
-	imull	-4(%rbp), %eax
-	addl	$2, %eax
-	movl	%eax, %eax
-	addq	%rax, %rdx
-	movq	-32(%rbp), %rax
+	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
 	movl	-4(%rbp), %ecx
 	addl	$2, %ecx
@@ -485,40 +468,74 @@ loadAssetItem:
 	addq	%rcx, %rax
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
+	movq	-904(%rbp), %rax
+	movq	40(%rax), %rax
+	movl	-12(%rbp), %edx
+	leal	0(,%rdx,4), %ecx
+	movl	-48(%rbp), %edx
+	addl	%ecx, %edx
+	addl	$1, %edx
+	movl	%edx, %edx
+	addq	%rax, %rdx
+	movq	-40(%rbp), %rax
+	movq	(%rax), %rax
+	movl	-4(%rbp), %ecx
+	addl	$1, %ecx
+	movl	%ecx, %ecx
+	addq	%rcx, %rax
+	movzbl	(%rax), %eax
+	movb	%al, (%rdx)
+	movq	-904(%rbp), %rax
+	movq	40(%rax), %rax
+	movl	-12(%rbp), %edx
+	leal	0(,%rdx,4), %ecx
+	movl	-48(%rbp), %edx
+	addl	%ecx, %edx
+	addl	$2, %edx
+	movl	%edx, %edx
+	addq	%rax, %rdx
+	movq	-40(%rbp), %rax
+	movq	(%rax), %rcx
+	movl	-4(%rbp), %eax
+	addq	%rcx, %rax
+	movzbl	(%rax), %eax
+	movb	%al, (%rdx)
 	addl	$3, -4(%rbp)
+	addl	$1, -12(%rbp)
 .L30:
 	movl	-4(%rbp), %eax
-	cmpl	-36(%rbp), %eax
+	cmpl	-44(%rbp), %eax
 	jb	.L31
+	addl	$1, -8(%rbp)
 .L29:
-	movl	-536(%rbp), %edx
-	movl	-564(%rbp), %eax
-	cmpl	%eax, %edx
-	jb	.L32
-	movl	-536(%rbp), %eax
-	imull	-36(%rbp), %eax
-	movl	%eax, %edx
-	movq	-888(%rbp), %rax
+	movl	-580(%rbp), %eax
+	cmpl	-8(%rbp), %eax
+	ja	.L32
+	movl	-584(%rbp), %edx
+	movl	-580(%rbp), %eax
+	imull	%edx, %eax
+	leal	0(,%rax,4), %edx
+	movq	-904(%rbp), %rax
 	movl	%edx, 48(%rax)
-	leaq	-704(%rbp), %rax
+	leaq	-720(%rbp), %rax
 	movq	%rax, %rdi
 	call	jpeg_finish_decompress
-	leaq	-704(%rbp), %rax
+	leaq	-720(%rbp), %rax
 	movq	%rax, %rdi
 	call	jpeg_destroy_decompress
-	movq	-32(%rbp), %rax
+	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdi
 	call	free
-	movq	-32(%rbp), %rax
+	movq	-40(%rbp), %rax
 	movq	%rax, %rdi
 	call	free
-	movq	-24(%rbp), %rax
+	movq	-32(%rbp), %rax
 	movq	%rax, %rdi
 	call	fclose
 	jmp	.L25
 .L26:
-	movq	-888(%rbp), %rax
+	movq	-904(%rbp), %rax
 	movq	24(%rax), %rax
 	movq	%rax, %rsi
 	movl	$.LC6, %edi
@@ -547,7 +564,7 @@ draw1:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$32, %rsp
+	subq	$64, %rsp
 	call	getCycles
 	movq	%rax, start(%rip)
 	movl	$192, gc_mask(%rip)
@@ -603,16 +620,16 @@ draw1:
 	movq	%rax, %rdi
 	call	XCreateColormap
 	movq	%rax, colormap(%rip)
-	movw	$-511, -8(%rbp)
-	movw	$0, -6(%rbp)
-	movw	$0, -4(%rbp)
+	movw	$31875, -24(%rbp)
+	movw	$31875, -22(%rbp)
+	movw	$31875, -20(%rbp)
 	movq	colormap(%rip), %rcx
 	movq	session(%rip), %rax
-	leaq	-16(%rbp), %rdx
+	leaq	-32(%rbp), %rdx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XAllocColor
-	movq	-16(%rbp), %rdx
+	movq	-32(%rbp), %rdx
 	movq	gc(%rip), %rcx
 	movq	session(%rip), %rax
 	movq	%rcx, %rsi
@@ -629,16 +646,16 @@ draw1:
 	movq	%rax, %rdi
 	call	XFillRectangle
 	addq	$16, %rsp
-	movw	$0, -24(%rbp)
-	movw	$-511, -22(%rbp)
-	movw	$0, -20(%rbp)
+	movw	$12495, -40(%rbp)
+	movw	$12495, -38(%rbp)
+	movw	$12495, -36(%rbp)
 	movq	colormap(%rip), %rcx
 	movq	session(%rip), %rax
-	leaq	-32(%rbp), %rdx
+	leaq	-48(%rbp), %rdx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XAllocColor
-	movq	-32(%rbp), %rdx
+	movq	-48(%rbp), %rdx
 	movq	gc(%rip), %rcx
 	movq	session(%rip), %rax
 	movq	%rcx, %rsi
@@ -662,6 +679,51 @@ draw1:
 	movq	%rax, %rdi
 	call	getPlayer
 	movw	%ax, playerIndex(%rip)
+	leaq	-56(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$10, %edi
+	call	getAssetById
+	movq	-56(%rbp), %rax
+	movzwl	34(%rax), %eax
+	movzwl	%ax, %ecx
+	movq	-56(%rbp), %rax
+	movzwl	32(%rax), %eax
+	movzwl	%ax, %edx
+	movq	-56(%rbp), %rax
+	movq	40(%rax), %rdi
+	movq	visual(%rip), %rsi
+	movq	session(%rip), %rax
+	pushq	$0
+	pushq	$32
+	pushq	%rcx
+	pushq	%rdx
+	movq	%rdi, %r9
+	movl	$0, %r8d
+	movl	$2, %ecx
+	movl	$24, %edx
+	movq	%rax, %rdi
+	call	XCreateImage
+	addq	$32, %rsp
+	movq	%rax, -8(%rbp)
+	movq	-56(%rbp), %rax
+	movzwl	34(%rax), %eax
+	movzwl	%ax, %r8d
+	movq	-56(%rbp), %rax
+	movzwl	32(%rax), %eax
+	movzwl	%ax, %edi
+	movq	gc(%rip), %rdx
+	movq	window(%rip), %rsi
+	movq	session(%rip), %rax
+	movq	-8(%rbp), %rcx
+	pushq	%r8
+	pushq	%rdi
+	pushq	$0
+	pushq	$0
+	movl	$0, %r9d
+	movl	$0, %r8d
+	movq	%rax, %rdi
+	call	XPutImage
+	addq	$32, %rsp
 	call	getCycles
 	movq	%rax, end(%rip)
 	movq	end(%rip), %rdx

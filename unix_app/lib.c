@@ -45,14 +45,14 @@ void seekAssets(void)
     return;
 }
 
-void getAssetById(byte id, struct asset **link)
+void getAssetById(byte id, struct asset **p)
 {
 	struct asset *cur = e;
 	while(cur < f)
 	{
 		if(cur->id == id)
 		{
-			*link = cur;
+			*p = cur;
 			cur = f;
 		}
 		else cur = cur->n;
@@ -83,7 +83,7 @@ void loadAssetItem(struct asset *asset)
 	if(strcmp(type,"jpg") == 0)
 	{
 		byte **buffer;
-		int_u i, buffer_length;
+		int_u i, index, k, buffer_length;
 		FILE *file;
 		struct jpeg_decompress_struct cinfo;
 		struct jpeg_error_mgr jerr;
@@ -97,23 +97,28 @@ void loadAssetItem(struct asset *asset)
 			jpeg_read_header(&cinfo, TRUE);
 			jpeg_start_decompress(&cinfo);
 			buffer = (byte **)malloc(sizeof(byte));
-			buffer_length = cinfo.output_width*cinfo.output_components;
-			buffer[0] = (byte *)malloc(sizeof(byte)*buffer_length);
-			asset->data = (byte *)malloc(sizeof(byte)*buffer_length*cinfo.output_height);
-			asset->width = cinfo.output_width;
+			buffer_length = cinfo.output_width*3;
+			//jpeg 24rgb
+			buffer[0] = (byte *)malloc((sizeof(byte))*buffer_length);
+			//x11 32bgra
+			asset->data = (byte *)malloc((sizeof(byte))*cinfo.output_width*cinfo.output_height*4);
+			asset->width = cinfo.output_width;	
 			asset->height = cinfo.output_height;
 			asset->type = type;
-			while (cinfo.output_scanline < cinfo.output_height)
+			int_u scanlinelength;
+			for(index=0;index<cinfo.output_height;index++)
 			{
-				(void)jpeg_read_scanlines(&cinfo, buffer, 1);
-				for(i=0;i<buffer_length;i+=3)
+				scanlinelength = cinfo.output_width*index*4;
+				(void)jpeg_read_scanlines(&cinfo, buffer,1);
+				for(i=0,k=0;i<buffer_length;i+=3,k++)
 				{
-					asset->data[cinfo.output_scanline * i + 0] = buffer[0][i];
-					asset->data[cinfo.output_scanline * i + 1] = buffer[0][i + 1];
-					asset->data[cinfo.output_scanline * i + 2] = buffer[0][i + 2];
+					//24 rgb => 32bgra ?? x11 case
+					asset->data[scanlinelength + (k* 4)] = buffer[0][i + 2];
+					asset->data[scanlinelength + (k* 4) + 1] = buffer[0][i + 1];
+					asset->data[scanlinelength + (k* 4) + 2] = buffer[0][i];
 				}
 			}
-			asset->data_length = buffer_length*cinfo.output_scanline;
+			asset->data_length = cinfo.output_width*cinfo.output_height*4;
 			jpeg_finish_decompress(&cinfo);
 			jpeg_destroy_decompress(&cinfo);
 			free(buffer[0]);

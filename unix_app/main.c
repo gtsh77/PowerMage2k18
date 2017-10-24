@@ -26,10 +26,6 @@ int main(void)
     loadAssets();
     //seekAssets();
 
-    //struct asset *test;
-    //getAssetById(15,&test);
-    //printf("%p\n",test);
-    
     //connect to xserv
     session = XOpenDisplay(NULL);   
     if (session == NULL)

@@ -52,16 +52,16 @@ void draw1(void)
 	//
 	// === DRAW CEIL/FLOOR ===
 	//
-
 	visual = DefaultVisual(session, DefaultScreen(session));
 	colormap = XCreateColormap(session, window, visual, AllocNone);
+	
 
 	XColor ceil_color, floor_color;
 
 	//CEILCOLOR
-	ceil_color.red = BIT16(255);
-	ceil_color.green = 0;
-	ceil_color.blue = 0;
+	ceil_color.red = BIT16(125);
+	ceil_color.green = BIT16(125);
+	ceil_color.blue = BIT16(125);
 
 	XAllocColor(session, colormap, &ceil_color);
 	XSetForeground(session, gc, ceil_color.pixel);
@@ -69,9 +69,9 @@ void draw1(void)
 	XFillRectangle(session, window, gc, 0, 0, FIELDW, FIELDH/2);
 
 	//FLOORCOLOR
-	floor_color.red = 0;
-	floor_color.green = BIT16(255);
-	floor_color.blue = 0;
+	floor_color.red = BIT16(49);
+	floor_color.green = BIT16(49);
+	floor_color.blue = BIT16(49);
 
 	XAllocColor(session, colormap, &floor_color);
 	XSetForeground(session, gc, floor_color.pixel);
@@ -82,10 +82,16 @@ void draw1(void)
 	// === DRAW FENCE BEHIN PLAYER
 	//
 
-	//DrawRectangle(session, window, gc, 0, 0, FIELDW, FIELDH/2);	
 	playerIndex = getPlayer(level.map,level.length);
 	//printf("%d\n",playerIndex);
-	
+
+	//get asset address
+	struct asset *asset;
+    getAssetById(10,&asset);
+
+	XImage *xasset;
+	xasset = XCreateImage(session, visual, 24, ZPixmap, 0, asset->data, asset->width, asset->height, 32, 0);
+	XPutImage(session, window, gc, xasset, 0, 0, 0, 0, asset->width, asset->height);
 
 	//
 	// === BENCH STUFF
