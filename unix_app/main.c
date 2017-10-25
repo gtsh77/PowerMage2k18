@@ -54,11 +54,7 @@ int main(void)
         if (cur_event.type == Expose)
         {
             draw3d();   
-            finishBench();
-            //matrix algo test (affine tang 10)
-            double points[] = {320,0,320,320,0,320,0,0,320-56*2,56,320-56*2,320-56,0,320,0,0}, factors[8];
-            solveMatrix(factors,points);
-            
+            finishBench();        
 
         }
         //exit point

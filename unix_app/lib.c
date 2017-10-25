@@ -142,7 +142,7 @@ void finishBench(void)
     return;
 }
 
-void solveMatrix(double *factors, double *points)
+void solveAffineMatrix(double *factors, double *points)
 {
 	byte i;
 	int s;	
@@ -174,4 +174,34 @@ void solveMatrix(double *factors, double *points)
 	gsl_permutation_free (p);
 	gsl_vector_free (x);
 	return;
+}
+
+void getAPoints(dbyte x, dbyte y, double *factors, struct coords *coords)
+{
+	coords->x = trunc((factors[0] * x + factors[1] * y + factors[2])/(factors[6] * x + factors[7] * y + 1));
+	coords->y = trunc((factors[3] * x + factors[4] * y + factors[5])/(factors[6] * x + factors[7] * y + 1));
+	return;
+}
+
+void doATransform(struct asset *asset, byte deg, byte *buffer)
+{
+    //calculate factors (tan10), get new coords
+    struct coords ncoords;
+    int_u i,j;
+    dbyte x,y, diff;
+    diff = floor(asset->width * tan(deg * (M_PI/180)));
+    double points[] = {asset->width,0,asset->width,asset->height,0,asset->height,0,0,asset->width-diff*2,diff,asset->width-diff*2,asset->height-diff,0,asset->height,0,0}, factors[8];
+    solveAffineMatrix(factors,points);
+    
+    for(i=0,j=0;i<asset->data_length;i+=4,j++)
+    {
+		y = floor(j / asset->width);
+		x = j - y*asset->width;
+    	getAPoints(x,y,factors,&ncoords);
+		buffer[ncoords.x * 4 + ncoords.y * asset->width * 4] = asset->data[i];
+		buffer[ncoords.x * 4 + (ncoords.y * asset->width * 4) + 1] = asset->data[i + 1];
+		buffer[ncoords.x * 4 + (ncoords.y * asset->width * 4) + 2] = asset->data[i + 2];
+		buffer[ncoords.x * 4 + (ncoords.y * asset->width * 4) + 3] = asset->data[i + 3];
+    }
+    return;
 }

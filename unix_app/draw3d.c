@@ -88,19 +88,26 @@ void draw3d(void)
 	//get asset address
 	struct asset *asset;
     getAssetById(10,&asset);
-
-	XImage *xasset;
-	xasset = XCreateImage(session, visual, 24, ZPixmap, 0, asset->data, asset->width, asset->height, 32, 0);
-	XPutImage(session, window, gc, xasset, 0, 0, 0, 0, asset->width, asset->height);
+    //create empty buffer
+    byte *bitmap;
+    bitmap = (byte *)malloc(sizeof(byte)*asset->data_length);
+    //start transform
+    doATransform(asset, 10, bitmap);
+    //alloc memory on x-server
+	XImage *xbitmap;
+	xbitmap = XCreateImage(session, visual, 24, ZPixmap, 0, bitmap, asset->width, asset->height, 32, 0);
+	//transfer and render
+	XPutImage(session, window, gc, xbitmap, 0, 0, 0, 0, asset->width, asset->height);
+	//free mem
+	free(bitmap);
 
 	//
 	// === BENCH STUFF
 	//
 
-	// end = getCycles();
-	// printf("Render: %.9f\n",(double)(end-start)/3.5e9);
+	end = getCycles();
+	printf("Render: %.9f\n",(double)(end-start)/3.5e9);
 	return;
-
 }
 
 

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <math.h>
 #include "jpeglib.h"
 #include <sys/types.h>
 #include <sys/time.h>
@@ -81,6 +82,12 @@ struct asset
     struct asset *n, *p;
 } *e, *l, *f;
 
+struct coords
+{
+	dbyte x;
+	dbyte y;
+};
+
 //libs: protos
 long_u getCycles(void);
 dbyte getPlayer(byte *, dbyte);
@@ -90,7 +97,9 @@ void seekAssets(void);
 void loadAssets(void);
 void loadAssetItem(struct asset *);
 void getAssetById(byte, struct asset **);
-void solveMatrix(double *, double *);
+void solveAffineMatrix(double *, double *);
+void getAPoints(dbyte, dbyte, double *, struct coords *);
+void doATransform(struct asset *, byte, byte *);
 
 //mainframes
 void draw3d(void);
