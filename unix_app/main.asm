@@ -42,7 +42,7 @@ objIds:
 	.globl	getCycles
 	.type	getCycles, @function
 getCycles:
-.LFB23:
+.LFB26:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -63,12 +63,12 @@ getCycles:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE23:
+.LFE26:
 	.size	getCycles, .-getCycles
 	.globl	getPlayer
 	.type	getPlayer, @function
 getPlayer:
-.LFB24:
+.LFB27:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -102,7 +102,7 @@ getPlayer:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE24:
+.LFE27:
 	.size	getPlayer, .-getPlayer
 	.section	.rodata
 .LC0:
@@ -110,13 +110,11 @@ getPlayer:
 	.align 8
 .LC1:
 	.string	"error: can't read world file: %s\n"
-.LC2:
-	.string	"world: %p (%d)\n"
 	.text
 	.globl	loadTileMap
 	.type	loadTileMap, @function
 loadTileMap:
-.LFB25:
+.LFB28:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -169,29 +167,22 @@ loadTileMap:
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	fclose
-	movzwl	level+8(%rip), %eax
-	movzwl	%ax, %edx
-	movq	level(%rip), %rax
-	movq	%rax, %rsi
-	movl	$.LC2, %edi
-	movl	$0, %eax
-	call	printf
 	nop
 .L8:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE25:
+.LFE28:
 	.size	loadTileMap, .-loadTileMap
 	.section	.rodata
-.LC3:
+.LC2:
 	.string	"env %d\n"
 	.text
 	.globl	seekAssets
 	.type	seekAssets, @function
 seekAssets:
-.LFB26:
+.LFB29:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -207,7 +198,7 @@ seekAssets:
 	movzbl	(%rax), %eax
 	movzbl	%al, %eax
 	movl	%eax, %esi
-	movl	$.LC3, %edi
+	movl	$.LC2, %edi
 	movl	$0, %eax
 	call	printf
 	movq	-8(%rbp), %rax
@@ -222,12 +213,12 @@ seekAssets:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE26:
+.LFE29:
 	.size	seekAssets, .-seekAssets
 	.globl	getAssetById
 	.type	getAssetById, @function
 getAssetById:
-.LFB27:
+.LFB30:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -264,12 +255,12 @@ getAssetById:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE27:
+.LFE30:
 	.size	getAssetById, .-getAssetById
 	.globl	loadAssets
 	.type	loadAssets, @function
 loadAssets:
-.LFB28:
+.LFB31:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -325,22 +316,22 @@ loadAssets:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE28:
+.LFE31:
 	.size	loadAssets, .-loadAssets
 	.section	.rodata
-.LC4:
+.LC3:
 	.string	"jpg"
 	.align 8
-.LC5:
+.LC4:
 	.string	"error: can't read asset file: %s\n"
 	.align 8
-.LC6:
+.LC5:
 	.string	"error: unsupported extension: %s\n"
 	.text
 	.globl	loadAssetItem
 	.type	loadAssetItem, @function
 loadAssetItem:
-.LFB29:
+.LFB32:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -357,7 +348,7 @@ loadAssetItem:
 	addq	$1, %rax
 	movq	%rax, -24(%rbp)
 	movq	-24(%rbp), %rax
-	movl	$.LC4, %esi
+	movl	$.LC3, %esi
 	movq	%rax, %rdi
 	call	strcmp
 	testl	%eax, %eax
@@ -382,7 +373,7 @@ loadAssetItem:
 	movq	-904(%rbp), %rax
 	movq	24(%rax), %rax
 	movq	%rax, %rsi
-	movl	$.LC5, %edi
+	movl	$.LC4, %edi
 	movl	$0, %eax
 	call	printf
 	jmp	.L25
@@ -535,7 +526,7 @@ loadAssetItem:
 	movq	-904(%rbp), %rax
 	movq	24(%rax), %rax
 	movq	%rax, %rsi
-	movl	$.LC6, %edi
+	movl	$.LC5, %edi
 	movl	$0, %eax
 	call	printf
 	nop
@@ -544,17 +535,459 @@ loadAssetItem:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE29:
+.LFE32:
 	.size	loadAssetItem, .-loadAssetItem
-	.comm	playerIndex,2,2
 	.section	.rodata
+.LC6:
+	.string	"\n\n======== BENCHS ========\n"
 .LC8:
-	.string	"Render: %.9f\n"
+	.string	"Total: %.9f\n"
+.LC9:
+	.string	"Memory: %d\n"
+.LC10:
+	.string	"\n======== BENCHS END ========"
 	.text
-	.globl	draw1
-	.type	draw1, @function
-draw1:
-.LFB30:
+	.globl	finishBench
+	.type	finishBench, @function
+finishBench:
+.LFB33:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$144, %rsp
+	call	getCycles
+	movq	%rax, totale(%rip)
+	leaq	-144(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$0, %edi
+	call	getrusage
+	movl	$.LC6, %edi
+	call	puts
+	movq	totale(%rip), %rdx
+	movq	totals(%rip), %rax
+	subq	%rax, %rdx
+	movq	%rdx, %rax
+	testq	%rax, %rax
+	js	.L36
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rax, %xmm0
+	jmp	.L37
+.L36:
+	movq	%rax, %rdx
+	shrq	%rdx
+	andl	$1, %eax
+	orq	%rax, %rdx
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rdx, %xmm0
+	addsd	%xmm0, %xmm0
+.L37:
+	movsd	.LC7(%rip), %xmm1
+	divsd	%xmm1, %xmm0
+	movl	$.LC8, %edi
+	movl	$1, %eax
+	call	printf
+	movq	-112(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$.LC9, %edi
+	movl	$0, %eax
+	call	printf
+	movl	$.LC10, %edi
+	call	puts
+	nop
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE33:
+	.size	finishBench, .-finishBench
+	.globl	solveMatrix
+	.type	solveMatrix, @function
+solveMatrix:
+.LFB34:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	pushq	%rbx
+	subq	$728, %rsp
+	.cfi_offset 3, -24
+	movq	%rdi, -728(%rbp)
+	movq	%rsi, -736(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	(%rax), %xmm0
+	movsd	%xmm0, -560(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	8(%rax), %xmm0
+	movsd	%xmm0, -552(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -544(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -536(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -528(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -520(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$64, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -512(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$8, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$64, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -504(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	16(%rax), %xmm0
+	movsd	%xmm0, -496(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	24(%rax), %xmm0
+	movsd	%xmm0, -488(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -480(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -472(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -464(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -456(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$16, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$80, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -448(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$24, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$80, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -440(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	32(%rax), %xmm0
+	movsd	%xmm0, -432(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	40(%rax), %xmm0
+	movsd	%xmm0, -424(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -416(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -408(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -400(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -392(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$32, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$96, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -384(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$40, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$96, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -376(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	48(%rax), %xmm0
+	movsd	%xmm0, -368(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	56(%rax), %xmm0
+	movsd	%xmm0, -360(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -352(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -344(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -336(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -328(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$48, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$112, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -320(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$56, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$112, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -312(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -304(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -296(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -288(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	(%rax), %xmm0
+	movsd	%xmm0, -280(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	8(%rax), %xmm0
+	movsd	%xmm0, -272(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -264(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$72, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -256(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$8, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$72, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -248(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -240(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -232(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -224(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	16(%rax), %xmm0
+	movsd	%xmm0, -216(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	24(%rax), %xmm0
+	movsd	%xmm0, -208(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -200(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$16, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$88, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -192(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$24, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$88, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -184(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -176(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -168(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -160(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	32(%rax), %xmm0
+	movsd	%xmm0, -152(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	40(%rax), %xmm0
+	movsd	%xmm0, -144(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -136(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$32, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$104, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -128(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$40, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$104, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -120(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -112(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -104(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -96(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	48(%rax), %xmm0
+	movsd	%xmm0, -88(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	56(%rax), %xmm0
+	movsd	%xmm0, -80(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -72(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$48, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$112, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -64(%rbp)
+	movq	-736(%rbp), %rax
+	addq	$56, %rax
+	movsd	(%rax), %xmm1
+	movsd	.LC13(%rip), %xmm0
+	xorpd	%xmm1, %xmm0
+	movq	-736(%rbp), %rax
+	addq	$112, %rax
+	movsd	(%rax), %xmm1
+	mulsd	%xmm1, %xmm0
+	movsd	%xmm0, -56(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	64(%rax), %xmm0
+	movsd	%xmm0, -624(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	80(%rax), %xmm0
+	movsd	%xmm0, -616(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	96(%rax), %xmm0
+	movsd	%xmm0, -608(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	112(%rax), %xmm0
+	movsd	%xmm0, -600(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	72(%rax), %xmm0
+	movsd	%xmm0, -592(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	88(%rax), %xmm0
+	movsd	%xmm0, -584(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	104(%rax), %xmm0
+	movsd	%xmm0, -576(%rbp)
+	movq	-736(%rbp), %rax
+	movsd	120(%rax), %xmm0
+	movsd	%xmm0, -568(%rbp)
+	movl	$8, %edi
+	call	gsl_vector_alloc
+	movq	%rax, -32(%rbp)
+	leaq	-672(%rbp), %rax
+	leaq	-560(%rbp), %rsi
+	movl	$8, %ecx
+	movl	$8, %edx
+	movq	%rax, %rdi
+	call	gsl_matrix_view_array
+	leaq	-720(%rbp), %rax
+	leaq	-624(%rbp), %rcx
+	movl	$8, %edx
+	movq	%rcx, %rsi
+	movq	%rax, %rdi
+	call	gsl_vector_view_array
+	movl	$8, %edi
+	call	gsl_permutation_alloc
+	movq	%rax, -40(%rbp)
+	leaq	-44(%rbp), %rdx
+	movq	-40(%rbp), %rcx
+	leaq	-672(%rbp), %rax
+	movq	%rcx, %rsi
+	movq	%rax, %rdi
+	call	gsl_linalg_LU_decomp
+	movq	-32(%rbp), %rcx
+	leaq	-720(%rbp), %rdx
+	movq	-40(%rbp), %rsi
+	leaq	-672(%rbp), %rax
+	movq	%rax, %rdi
+	call	gsl_linalg_LU_solve
+	movq	-32(%rbp), %rcx
+	leaq	-720(%rbp), %rdx
+	movq	-40(%rbp), %rsi
+	leaq	-672(%rbp), %rax
+	movq	%rax, %rdi
+	call	gsl_linalg_LU_solve
+	movb	$0, -17(%rbp)
+	jmp	.L40
+.L41:
+	movzbl	-17(%rbp), %eax
+	leaq	0(,%rax,8), %rdx
+	movq	-728(%rbp), %rax
+	leaq	(%rdx,%rax), %rbx
+	movzbl	-17(%rbp), %edx
+	movq	-32(%rbp), %rax
+	movq	%rdx, %rsi
+	movq	%rax, %rdi
+	call	gsl_vector_get
+	movq	%xmm0, %rax
+	movq	%rax, (%rbx)
+	movzbl	-17(%rbp), %eax
+	addl	$1, %eax
+	movb	%al, -17(%rbp)
+.L40:
+	cmpb	$7, -17(%rbp)
+	jbe	.L41
+	movq	-40(%rbp), %rax
+	movq	%rax, %rdi
+	call	gsl_permutation_free
+	movq	-32(%rbp), %rax
+	movq	%rax, %rdi
+	call	gsl_vector_free
+	nop
+	addq	$728, %rsp
+	popq	%rbx
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE34:
+	.size	solveMatrix, .-solveMatrix
+	.comm	playerIndex,2,2
+	.globl	draw3d
+	.type	draw3d, @function
+draw3d:
+.LFB35:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -721,38 +1154,13 @@ draw1:
 	movq	%rax, %rdi
 	call	XPutImage
 	addq	$32, %rsp
-	call	getCycles
-	movq	%rax, end(%rip)
-	movq	end(%rip), %rdx
-	movq	start(%rip), %rax
-	subq	%rax, %rdx
-	movq	%rdx, %rax
-	testq	%rax, %rax
-	js	.L36
-	pxor	%xmm0, %xmm0
-	cvtsi2sdq	%rax, %xmm0
-	jmp	.L37
-.L36:
-	movq	%rax, %rdx
-	shrq	%rdx
-	andl	$1, %eax
-	orq	%rax, %rdx
-	pxor	%xmm0, %xmm0
-	cvtsi2sdq	%rdx, %xmm0
-	addsd	%xmm0, %xmm0
-.L37:
-	movsd	.LC7(%rip), %xmm1
-	divsd	%xmm1, %xmm0
-	movl	$.LC8, %edi
-	movl	$1, %eax
-	call	printf
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE30:
-	.size	draw1, .-draw1
+.LFE35:
+	.size	draw3d, .-draw3d
 	.comm	session,8,8
 	.comm	window,8,8
 	.comm	cur_event,192,32
@@ -766,30 +1174,26 @@ draw1:
 	.comm	totale,8,8
 	.comm	visual,8,8
 	.comm	colormap,8,8
-	.comm	rusage,144,32
 	.section	.rodata
-.LC9:
+.LC14:
 	.string	"../maps/unix1.json.bin"
-.LC10:
+.LC15:
 	.string	"Cannot open server\n"
-.LC11:
-	.string	"Total: %.9f\n"
-.LC12:
-	.string	"Memory: %d\n"
 	.text
 	.globl	main
 	.type	main, @function
 main:
-.LFB31:
+.LFB36:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	subq	$192, %rsp
 	call	getCycles
 	movq	%rax, totals(%rip)
-	movl	$.LC9, %edi
+	movl	$.LC14, %edi
 	call	loadTileMap
 	call	loadAssets
 	movl	$0, %edi
@@ -797,16 +1201,16 @@ main:
 	movq	%rax, session(%rip)
 	movq	session(%rip), %rax
 	testq	%rax, %rax
-	jne	.L40
+	jne	.L46
 	movq	__stderrp(%rip), %rax
 	movq	%rax, %rcx
 	movl	$19, %edx
 	movl	$1, %esi
-	movl	$.LC10, %edi
+	movl	$.LC15, %edi
 	call	fwrite
 	movl	$1, %edi
 	call	exit
-.L40:
+.L46:
 	movq	session(%rip), %rax
 	movl	224(%rax), %eax
 	movb	%al, cur_screen(%rip)
@@ -858,55 +1262,60 @@ main:
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
 	call	XFlush
-.L46:
+.L50:
 	movq	session(%rip), %rax
 	movl	$cur_event, %esi
 	movq	%rax, %rdi
 	call	XNextEvent
 	movl	cur_event(%rip), %eax
 	cmpl	$12, %eax
-	jne	.L41
-	call	draw1
-	call	getCycles
-	movq	%rax, totale(%rip)
-	movl	$rusage, %esi
-	movl	$0, %edi
-	call	getrusage
-	movq	totale(%rip), %rdx
-	movq	totals(%rip), %rax
-	subq	%rax, %rdx
-	movq	%rdx, %rax
-	testq	%rax, %rax
-	js	.L42
+	jne	.L47
+	call	draw3d
+	call	finishBench
+	movsd	.LC16(%rip), %xmm0
+	movsd	%xmm0, -128(%rbp)
 	pxor	%xmm0, %xmm0
-	cvtsi2sdq	%rax, %xmm0
-	jmp	.L43
-.L42:
-	movq	%rax, %rdx
-	shrq	%rdx
-	andl	$1, %eax
-	orq	%rax, %rdx
+	movsd	%xmm0, -120(%rbp)
+	movsd	.LC16(%rip), %xmm0
+	movsd	%xmm0, -112(%rbp)
+	movsd	.LC16(%rip), %xmm0
+	movsd	%xmm0, -104(%rbp)
 	pxor	%xmm0, %xmm0
-	cvtsi2sdq	%rdx, %xmm0
-	addsd	%xmm0, %xmm0
-.L43:
-	movsd	.LC7(%rip), %xmm1
-	divsd	%xmm1, %xmm0
-	movl	$.LC11, %edi
-	movl	$1, %eax
-	call	printf
-	movq	rusage+32(%rip), %rax
-	movq	%rax, %rsi
-	movl	$.LC12, %edi
-	movl	$0, %eax
-	call	printf
-	jmp	.L46
-.L41:
+	movsd	%xmm0, -96(%rbp)
+	movsd	.LC16(%rip), %xmm0
+	movsd	%xmm0, -88(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -80(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -72(%rbp)
+	movsd	.LC17(%rip), %xmm0
+	movsd	%xmm0, -64(%rbp)
+	movsd	.LC18(%rip), %xmm0
+	movsd	%xmm0, -56(%rbp)
+	movsd	.LC17(%rip), %xmm0
+	movsd	%xmm0, -48(%rbp)
+	movsd	.LC19(%rip), %xmm0
+	movsd	%xmm0, -40(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -32(%rbp)
+	movsd	.LC16(%rip), %xmm0
+	movsd	%xmm0, -24(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -16(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -8(%rbp)
+	leaq	-128(%rbp), %rdx
+	leaq	-192(%rbp), %rax
+	movq	%rdx, %rsi
+	movq	%rax, %rdi
+	call	solveMatrix
+	jmp	.L50
+.L47:
 	movl	cur_event(%rip), %eax
 	cmpl	$2, %eax
-	je	.L49
-	jmp	.L46
-.L49:
+	je	.L53
+	jmp	.L50
+.L53:
 	nop
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
@@ -916,12 +1325,38 @@ main:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE31:
+.LFE36:
 	.size	main, .-main
 	.section	.rodata
 	.align 8
 .LC7:
 	.long	1610612736
 	.long	1105859512
+	.align 8
+.LC11:
+	.long	0
+	.long	1072693248
+	.align 16
+.LC13:
+	.long	0
+	.long	-2147483648
+	.long	0
+	.long	0
+	.align 8
+.LC16:
+	.long	0
+	.long	1081344000
+	.align 8
+.LC17:
+	.long	0
+	.long	1080688640
+	.align 8
+.LC18:
+	.long	0
+	.long	1078722560
+	.align 8
+.LC19:
+	.long	0
+	.long	1081114624
 	.ident	"GCC: (FreeBSD Ports Collection) 6.4.0"
 	.section	.note.GNU-stack,"",@progbits

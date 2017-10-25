@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <gsl/gsl_linalg.h>
 
 #define FIELDW 640
 #define FIELDH 480
@@ -89,6 +90,7 @@ void seekAssets(void);
 void loadAssets(void);
 void loadAssetItem(struct asset *);
 void getAssetById(byte, struct asset **);
+void solveMatrix(double *, double *);
 
 //mainframes
 void draw3d(void);

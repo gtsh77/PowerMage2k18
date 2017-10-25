@@ -139,4 +139,39 @@ void finishBench(void)
     printf("Total: %.9f\n",(double)(totale-totals)/3.5e9);
     printf("Memory: %d\n",rusage.ru_maxrss);
     printf("\n======== BENCHS END ========\n");
+    return;
+}
+
+void solveMatrix(double *factors, double *points)
+{
+	byte i;
+	int s;	
+	double a_data[] = 
+	{ 
+		points[0],points[1],1,0,0,0,-points[0]*points[8],-points[1]*points[8],
+		points[2],points[3],1,0,0,0,-points[2]*points[10],-points[3]*points[10],
+		points[4],points[5],1,0,0,0,-points[4]*points[12],-points[5]*points[12],
+		points[6],points[7],1,0,0,0,-points[6]*points[14],-points[7]*points[14],
+		0,0,0,points[0],points[1],1,-points[0]*points[9],-points[1]*points[9],
+		0,0,0,points[2],points[3],1,-points[2]*points[11],-points[3]*points[11],
+		0,0,0,points[4],points[5],1,-points[4]*points[13],-points[5]*points[13],
+		0,0,0,points[6],points[7],1,-points[6]*points[14],-points[7]*points[14]
+	};
+
+  	double b_data[] = {points[8],points[10],points[12],points[14],points[9],points[11],points[13],points[15]};
+
+  	gsl_vector *x = gsl_vector_alloc (8);
+	gsl_matrix_view m = gsl_matrix_view_array (a_data, 8, 8);
+	gsl_vector_view b = gsl_vector_view_array (b_data, 8);	
+	gsl_permutation * p = gsl_permutation_alloc (8);
+	gsl_linalg_LU_decomp (&m.matrix, p, &s);
+	gsl_linalg_LU_solve (&m.matrix, p, &b.vector, x);
+	gsl_linalg_LU_solve (&m.matrix, p, &b.vector, x);
+	for(i=0;i<8;i++)
+	{
+		factors[i] = gsl_vector_get(x,i);
+	}
+	gsl_permutation_free (p);
+	gsl_vector_free (x);
+	return;
 }
