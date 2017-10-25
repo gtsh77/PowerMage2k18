@@ -4,7 +4,7 @@ dbyte playerIndex;
 
 void draw3d(void)
 {
-	start = getCycles();
+	
 	//
 	// === GC INIT ===
 	//
@@ -84,10 +84,12 @@ void draw3d(void)
 
 	playerIndex = getPlayer(level.map,level.length);
 	//printf("%d\n",playerIndex);
-
+	#ifdef SB
+	start = getCycles();
+	#endif
 	//get asset address
 	struct asset *asset;
-    getAssetById(10,&asset);
+    getAssetById(12,&asset);
     //create empty buffer
     byte *bitmap;
     bitmap = (byte *)malloc(sizeof(byte)*asset->data_length);
@@ -105,8 +107,10 @@ void draw3d(void)
 	// === BENCH STUFF
 	//
 
+	#ifdef SB
 	end = getCycles();
 	printf("Render: %.9f\n",(double)(end-start)/3.5e9);
+	#endif
 	return;
 }
 

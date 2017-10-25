@@ -6,7 +6,7 @@ PROJECT PROGRESS: https://trello.com/b/cVi9Nqy5/3d-2d-powermage-2k18
 PROJECT IDEAS: 
 
 3d:
-1. Choose between compiled scalers (JDK tech) and full affine texture transformation in mini-buffer (current state)
+1. Choose between compiled scalers (JDC tech) and full affine texture transformation in mini-buffer (current state)
 2. Full ray casting implementation based on tiles-map-array (currently only one 90deg ray casts)
 
 2d:

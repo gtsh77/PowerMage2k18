@@ -10,11 +10,14 @@
 #include <sys/resource.h>
 #include <gsl/gsl_linalg.h>
 
+#ifndef _MAIN_H
+#define _MAIN_H
 #define FIELDW 640
 #define FIELDH 480
 #define CENTERX FIELDW/2
 #define CENTERY FIELDH/2
 #define BIT16(u) (u) * 255
+//#define SB 1
 
 //own types
 typedef char byte_u;
@@ -103,3 +106,5 @@ void doATransform(struct asset *, byte, byte *);
 
 //mainframes
 void draw3d(void);
+
+#endif

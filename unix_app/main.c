@@ -15,8 +15,10 @@ Colormap colormap;
 
 int main(void)
 {   
+    #ifdef SB
     //start bench
     totals = getCycles();
+    #endif
     
     //load level from tct's binary output into memory
     loadTileMap("../maps/unix1.json.bin");
@@ -53,8 +55,10 @@ int main(void)
         //draw
         if (cur_event.type == Expose)
         {
-            draw3d();   
-            finishBench();        
+            draw3d();
+            #ifdef SB
+            finishBench();
+            #endif
 
         }
         //exit point
