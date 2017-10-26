@@ -194,6 +194,10 @@ void doATransform(dbyte width, dbyte height, byte deg, byte *buffer, byte *buffe
     data_length = sizeof(byte)*width*height*4;
     double points[] = {width,0,width,height,0,height,0,0,width-diff*2,diff,width-diff*2,height-diff,0,height,0,0},factors[8];
     solveAffineMatrix(factors,points);
+	    // for(i=0;i<data_length;i++)
+	    // {
+	    // 	buffer2[i] = 0;
+	    // }
     
     for(i=0,j=0;i<data_length;i+=4,j++)
     {
@@ -253,7 +257,7 @@ void drawAsset(byte id, float h, float w, byte perspective, dbyte xsrc, dbyte ys
     {
     	printf("AT\n");
 	    //alloc next buffer
-	    bitmap2 = (byte *)malloc(sizeof(byte)*asset->width*height*4);    	
+	    bitmap2 = (byte *)calloc(asset->width*height*4,sizeof(byte)*asset->width*height*4);    	
     	doATransform(asset->width, height, perspective, asset->height != height?bitmap:asset->data, bitmap2);
     }
     //aloc buffer on x-serv

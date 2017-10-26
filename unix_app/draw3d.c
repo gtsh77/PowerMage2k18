@@ -54,7 +54,7 @@ void draw3d(void)
 	ceil_color.blue = BIT16(125);
 
 	XAllocColor(session, colormap, &ceil_color);
-	XSetForeground(session, gc, ceil_color.pixel);
+	XSetForeground(session, gc, BlackPixel(session,cur_screen));
 
 	XFillRectangle(session, window, gc, 0, 0, FIELDW, FIELDH/2);
 
@@ -64,7 +64,8 @@ void draw3d(void)
 	floor_color.blue = BIT16(49);
 
 	XAllocColor(session, colormap, &floor_color);
-	XSetForeground(session, gc, floor_color.pixel);
+	//XSetForeground(session, gc, floor_color.pixel);
+	XSetForeground(session, gc, BlackPixel(session,cur_screen));
 
 	XFillRectangle(session, window, gc, 0, (FIELDH/2), FIELDW, FIELDH);
 
