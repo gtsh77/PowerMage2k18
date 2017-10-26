@@ -17,7 +17,7 @@
 #define CENTERX FIELDW/2
 #define CENTERY FIELDH/2
 #define BIT16(u) (u) * 255
-//#define SB 1
+#define SB 1
 
 //own types
 typedef char byte_u;
@@ -38,6 +38,7 @@ extern long_u start, end, totals, totale;
 extern dbyte playerIndex;
 extern Visual *visual;
 extern Colormap colormap;
+extern Pixmap pixmap;
 
 struct
 {
@@ -102,7 +103,9 @@ void loadAssetItem(struct asset *);
 void getAssetById(byte, struct asset **);
 void solveAffineMatrix(double *, double *);
 void getAPoints(dbyte, dbyte, double *, struct coords *);
-void doATransform(struct asset *, byte, byte *);
+void doATransform(dbyte, dbyte, byte, byte *, byte *);
+void doYTransform(struct asset *, dbyte , byte *);
+void drawAsset(byte, float, float, byte, dbyte, dbyte);
 
 //mainframes
 void draw3d(void);

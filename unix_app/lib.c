@@ -116,6 +116,7 @@ void loadAssetItem(struct asset *asset)
 					asset->data[scanlinelength + k] = buffer[0][i + 2];
 					asset->data[scanlinelength + k + 1] = buffer[0][i + 1];
 					asset->data[scanlinelength + k + 2] = buffer[0][i];
+					asset->data[scanlinelength + k + 3] = 0;
 				}
 			}
 			asset->data_length = cinfo.output_width*cinfo.output_height*4;
@@ -183,25 +184,87 @@ void getAPoints(dbyte x, dbyte y, double *factors, struct coords *coords)
 	return;
 }
 
-void doATransform(struct asset *asset, byte deg, byte *buffer)
+void doATransform(dbyte width, dbyte height, byte deg, byte *buffer, byte *buffer2)
 {
     //calculate factors (tan10), get new coords
     struct coords ncoords;
-    int_u i,j;
+    int_u i, j, index, data_length;
     dbyte x,y, diff;
-    diff = floor(asset->width * tan(deg * (M_PI/180)));
-    double points[] = {asset->width,0,asset->width,asset->height,0,asset->height,0,0,asset->width-diff*2,diff,asset->width-diff*2,asset->height-diff,0,asset->height,0,0}, factors[8];
+    diff = floor(width * tan(deg * (M_PI/180)));
+    data_length = sizeof(byte)*width*height*4;
+    double points[] = {width,0,width,height,0,height,0,0,width-diff*2,diff,width-diff*2,height-diff,0,height,0,0},factors[8];
     solveAffineMatrix(factors,points);
     
-    for(i=0,j=0;i<asset->data_length;i+=4,j++)
+    for(i=0,j=0;i<data_length;i+=4,j++)
     {
-		y = floor(j / asset->width);
-		x = j - y*asset->width;
+		y = floor(j / width);
+		x = j - y*width;
     	getAPoints(x,y,factors,&ncoords);
-		buffer[ncoords.x * 4 + ncoords.y * asset->width * 4] = asset->data[i];
-		buffer[ncoords.x * 4 + (ncoords.y * asset->width * 4) + 1] = asset->data[i + 1];
-		buffer[ncoords.x * 4 + (ncoords.y * asset->width * 4) + 2] = asset->data[i + 2];
-		buffer[ncoords.x * 4 + (ncoords.y * asset->width * 4) + 3] = asset->data[i + 3];
+    	index = ncoords.x * 4 + ncoords.y * width * 4;
+		buffer2[index] = buffer[i];
+		buffer2[index + 1] = buffer[i + 1];
+		buffer2[index + 2] = buffer[i + 2];
+		buffer2[index + 3] = buffer[i + 3];
     }
     return;
+}
+void doYTransform(struct asset *asset, dbyte height, byte *buffer)
+{
+    int_u i, j, index, buffer_length;
+    dbyte x, y, Y;
+    double diff;
+    buffer_length = sizeof(byte)*asset->width*height*4;
+
+    diff = (double)(asset->height -1)/(double)(height-1);
+    
+    for(i=0,j=0;i<buffer_length;i+=4,j++)
+    {
+		y = floor(j / asset->width);
+		Y = round(y *diff);
+    	x = j - y*asset->width;
+		
+		index = Y * asset->width * 4 + x * 4;
+
+		buffer[i] = asset->data[index];
+		buffer[i + 1] = asset->data[index + 1];
+		buffer[i + 2] = asset->data[index + 2];
+		buffer[i + 3] = asset->data[index + 3];
+    }
+    return;
+}
+
+void drawAsset(byte id, float h, float w, byte perspective, dbyte xsrc, dbyte ysrc)
+{
+	//get address
+	struct asset *asset;
+    getAssetById(id,&asset);
+    //chk width & height req
+    dbyte height, width;
+    height = trunc(asset->height * h);
+    width = trunc(asset->width * w);
+    //init buffer
+	byte *bitmap, *bitmap2;
+    bitmap = (byte *)malloc(sizeof(byte)*asset->width*height*4);
+
+    //do scale if nes
+    if(asset->height != height)	doYTransform(asset, height, bitmap);
+    //do pers if nes
+    if(perspective > 0)	
+    {
+    	printf("AT\n");
+	    //alloc next buffer
+	    bitmap2 = (byte *)malloc(sizeof(byte)*asset->width*height*4);    	
+    	doATransform(asset->width, height, perspective, asset->height != height?bitmap:asset->data, bitmap2);
+    }
+    //aloc buffer on x-serv
+	XImage *xbitmap;
+	xbitmap = XCreateImage(session, visual, 24, ZPixmap, 0, (perspective > 0?bitmap2:(asset->height != height?bitmap:asset->data)), asset->width, height, 32, 0);
+	//transfer & render
+	XPutImage(session, window, gc, xbitmap, 0, 0, xsrc, ysrc, width, height);
+	//free buffers
+	if(asset->height != height)	free(bitmap);
+	if(perspective > 0) free(bitmap2);
+	
+	return;
+    	
 }

@@ -8,16 +8,6 @@ void draw3d(void)
 	//
 	// === GC INIT ===
 	//
-	//set graphical context mask
-	gc_mask = GCCapStyle | GCJoinStyle;
-	//set gc vals
-	gc_val.cap_style = CapButt;
-	gc_val.join_style = JoinBevel;
-	//create gc
-	gc = XCreateGC(session, window, gc_mask, &gc_val);
-	//printf("%d\n",gc);
-	//set foreground
-	//XSetForeground(session, gc, WhitePixel(session,cur_screen));
 	//set background
 	XSetBackground(session, gc, BlackPixel(session,cur_screen));
 	//set fill style
@@ -36,7 +26,7 @@ void draw3d(void)
 	// 	{15,130},
 	// 	{0,160},
 	// 	{0,130}
-	// };
+	// };	
 
 	//XDrawLines(session, window, gc, points, 4, CoordModeOrigin);
 	//XFillPolygon(session, window, gc, points, 4, Complex, CoordModeOrigin);
@@ -52,7 +42,7 @@ void draw3d(void)
 	//
 	// === DRAW CEIL/FLOOR ===
 	//
-	visual = DefaultVisual(session, DefaultScreen(session));
+	
 	colormap = XCreateColormap(session, window, visual, AllocNone);
 	
 
@@ -87,21 +77,15 @@ void draw3d(void)
 	#ifdef SB
 	start = getCycles();
 	#endif
-	//get asset address
-	struct asset *asset;
-    getAssetById(12,&asset);
-    //create empty buffer
-    byte *bitmap;
-    bitmap = (byte *)malloc(sizeof(byte)*asset->data_length);
-    //start transform
-    doATransform(asset, 10, bitmap);
-    //alloc memory on x-server
-	XImage *xbitmap;
-	xbitmap = XCreateImage(session, visual, 24, ZPixmap, 0, bitmap, asset->width, asset->height, 32, 0);
-	//transfer and render
-	XPutImage(session, window, gc, xbitmap, 0, 0, 0, 0, asset->width, asset->height);
-	//free mem
-	free(bitmap);
+
+	//test visualisation
+
+	drawAsset(12, 1.245, 1, 15, CENTERX-5*128/2 + 8, CENTERY-256*1.245/2);
+	drawAsset(12, 0.98, 1, 15, CENTERX-4*128/2 + 4, CENTERY-256*0.98/2);
+
+	drawAsset(12, 0.72, 1, 0, CENTERX-128/2, CENTERY-256*0.72/2);
+	drawAsset(12, 0.72, 1, 0, CENTERX+128/2, CENTERY-256*0.72/2);
+	drawAsset(12, 0.72, 1, 0, CENTERX-3*128/2, CENTERY-256*0.72/2);	
 
 	//
 	// === BENCH STUFF
