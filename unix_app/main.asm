@@ -1108,49 +1108,52 @@ doATransform:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$272, %rsp
+	subq	$400, %rsp
 	movl	%edx, %eax
-	movq	%rcx, -248(%rbp)
-	movq	%r8, -256(%rbp)
-	movw	%di, -228(%rbp)
-	movw	%si, -232(%rbp)
-	movb	%al, -236(%rbp)
-	movzwl	-228(%rbp), %eax
+	movq	%rcx, -376(%rbp)
+	movq	%r8, -384(%rbp)
+	movw	%di, -356(%rbp)
+	movw	%si, -360(%rbp)
+	movb	%al, -364(%rbp)
+	movzwl	-356(%rbp), %eax
 	pxor	%xmm2, %xmm2
 	cvtsi2sd	%eax, %xmm2
-	movsd	%xmm2, -264(%rbp)
-	movzbl	-236(%rbp), %eax
+	movsd	%xmm2, -392(%rbp)
+	movsbl	-364(%rbp), %eax
+	cltd
+	xorl	%edx, %eax
+	subl	%edx, %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
 	movsd	.LC14(%rip), %xmm1
 	mulsd	%xmm1, %xmm0
 	call	tan
-	mulsd	-264(%rbp), %xmm0
+	mulsd	-392(%rbp), %xmm0
 	call	floor
 	cvttsd2si	%xmm0, %eax
 	movw	%ax, -10(%rbp)
-	movzwl	-228(%rbp), %edx
-	movzwl	-232(%rbp), %eax
+	movzwl	-356(%rbp), %edx
+	movzwl	-360(%rbp), %eax
 	imull	%edx, %eax
 	sall	$2, %eax
 	movl	%eax, -16(%rbp)
-	movzwl	-228(%rbp), %eax
+	movzwl	-356(%rbp), %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
 	movsd	%xmm0, -160(%rbp)
 	pxor	%xmm0, %xmm0
 	movsd	%xmm0, -152(%rbp)
-	movzwl	-228(%rbp), %eax
+	movzwl	-356(%rbp), %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
 	movsd	%xmm0, -144(%rbp)
-	movzwl	-232(%rbp), %eax
+	movzwl	-360(%rbp), %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
 	movsd	%xmm0, -136(%rbp)
 	pxor	%xmm0, %xmm0
 	movsd	%xmm0, -128(%rbp)
-	movzwl	-232(%rbp), %eax
+	movzwl	-360(%rbp), %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
 	movsd	%xmm0, -120(%rbp)
@@ -1158,7 +1161,7 @@ doATransform:
 	movsd	%xmm0, -112(%rbp)
 	pxor	%xmm0, %xmm0
 	movsd	%xmm0, -104(%rbp)
-	movzwl	-228(%rbp), %eax
+	movzwl	-356(%rbp), %eax
 	movzwl	-10(%rbp), %edx
 	addl	%edx, %edx
 	subl	%edx, %eax
@@ -1169,14 +1172,14 @@ doATransform:
 	pxor	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
 	movsd	%xmm0, -88(%rbp)
-	movzwl	-228(%rbp), %eax
+	movzwl	-356(%rbp), %eax
 	movzwl	-10(%rbp), %edx
 	addl	%edx, %edx
 	subl	%edx, %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
 	movsd	%xmm0, -80(%rbp)
-	movzwl	-232(%rbp), %edx
+	movzwl	-360(%rbp), %edx
 	movzwl	-10(%rbp), %eax
 	subl	%eax, %edx
 	movl	%edx, %eax
@@ -1185,7 +1188,7 @@ doATransform:
 	movsd	%xmm0, -72(%rbp)
 	pxor	%xmm0, %xmm0
 	movsd	%xmm0, -64(%rbp)
-	movzwl	-232(%rbp), %eax
+	movzwl	-360(%rbp), %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
 	movsd	%xmm0, -56(%rbp)
@@ -1193,26 +1196,95 @@ doATransform:
 	movsd	%xmm0, -48(%rbp)
 	pxor	%xmm0, %xmm0
 	movsd	%xmm0, -40(%rbp)
-	leaq	-160(%rbp), %rdx
-	leaq	-224(%rbp), %rax
+	movzwl	-356(%rbp), %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -288(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -280(%rbp)
+	movzwl	-356(%rbp), %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -272(%rbp)
+	movzwl	-360(%rbp), %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -264(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -256(%rbp)
+	movzwl	-360(%rbp), %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -248(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -240(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -232(%rbp)
+	movzwl	-356(%rbp), %eax
+	movzwl	-10(%rbp), %edx
+	addl	%edx, %edx
+	subl	%edx, %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -224(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -216(%rbp)
+	movzwl	-356(%rbp), %eax
+	movzwl	-10(%rbp), %edx
+	addl	%edx, %edx
+	subl	%edx, %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -208(%rbp)
+	movzwl	-360(%rbp), %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -200(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -192(%rbp)
+	movzwl	-360(%rbp), %edx
+	movzwl	-10(%rbp), %eax
+	subl	%eax, %edx
+	movl	%edx, %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -184(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -176(%rbp)
+	movzwl	-10(%rbp), %eax
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%eax, %xmm0
+	movsd	%xmm0, -168(%rbp)
+	cmpb	$0, -364(%rbp)
+	jns	.L46
+	leaq	-288(%rbp), %rdx
+	leaq	-352(%rbp), %rax
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	call	solveAffineMatrix
+	jmp	.L47
+.L46:
+	leaq	-160(%rbp), %rdx
+	leaq	-352(%rbp), %rax
+	movq	%rdx, %rsi
+	movq	%rax, %rdi
+	call	solveAffineMatrix
+.L47:
 	movl	$0, -4(%rbp)
 	movl	$0, -8(%rbp)
-	jmp	.L46
-.L49:
-	movzwl	-228(%rbp), %edi
+	jmp	.L48
+.L51:
+	movzwl	-356(%rbp), %edi
 	movl	-8(%rbp), %eax
 	movl	$0, %edx
 	divl	%edi
 	movl	%eax, %eax
 	testq	%rax, %rax
-	js	.L47
+	js	.L49
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
-	jmp	.L48
-.L47:
+	jmp	.L50
+.L49:
 	movq	%rax, %rdx
 	shrq	%rdx
 	andl	$1, %eax
@@ -1220,82 +1292,82 @@ doATransform:
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rdx, %xmm0
 	addsd	%xmm0, %xmm0
-.L48:
+.L50:
 	call	floor
 	cvttsd2si	%xmm0, %eax
 	movw	%ax, -18(%rbp)
 	movl	-8(%rbp), %eax
 	movl	%eax, %edx
 	movzwl	-18(%rbp), %eax
-	imulw	-228(%rbp), %ax
+	imulw	-356(%rbp), %ax
 	subl	%eax, %edx
 	movl	%edx, %eax
 	movw	%ax, -20(%rbp)
 	movzwl	-18(%rbp), %esi
 	movzwl	-20(%rbp), %eax
 	leaq	-28(%rbp), %rcx
-	leaq	-224(%rbp), %rdx
+	leaq	-352(%rbp), %rdx
 	movl	%eax, %edi
 	call	getAPoints
 	movzwl	-28(%rbp), %eax
 	movzwl	%ax, %edx
 	movzwl	-26(%rbp), %eax
 	movzwl	%ax, %ecx
-	movzwl	-228(%rbp), %eax
+	movzwl	-356(%rbp), %eax
 	imull	%ecx, %eax
 	addl	%edx, %eax
 	sall	$2, %eax
 	movl	%eax, -24(%rbp)
 	movl	-24(%rbp), %edx
-	movq	-256(%rbp), %rax
+	movq	-384(%rbp), %rax
 	addq	%rax, %rdx
 	movl	-4(%rbp), %ecx
-	movq	-248(%rbp), %rax
+	movq	-376(%rbp), %rax
 	addq	%rcx, %rax
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
 	movl	-24(%rbp), %eax
 	addl	$1, %eax
 	movl	%eax, %edx
-	movq	-256(%rbp), %rax
+	movq	-384(%rbp), %rax
 	addq	%rax, %rdx
 	movl	-4(%rbp), %eax
 	addl	$1, %eax
 	movl	%eax, %ecx
-	movq	-248(%rbp), %rax
+	movq	-376(%rbp), %rax
 	addq	%rcx, %rax
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
 	movl	-24(%rbp), %eax
 	addl	$2, %eax
 	movl	%eax, %edx
-	movq	-256(%rbp), %rax
+	movq	-384(%rbp), %rax
 	addq	%rax, %rdx
 	movl	-4(%rbp), %eax
 	addl	$2, %eax
 	movl	%eax, %ecx
-	movq	-248(%rbp), %rax
+	movq	-376(%rbp), %rax
 	addq	%rcx, %rax
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
 	movl	-24(%rbp), %eax
 	addl	$3, %eax
 	movl	%eax, %edx
-	movq	-256(%rbp), %rax
+	movq	-384(%rbp), %rax
 	addq	%rax, %rdx
 	movl	-4(%rbp), %eax
 	addl	$3, %eax
 	movl	%eax, %ecx
-	movq	-248(%rbp), %rax
+	movq	-376(%rbp), %rax
 	addq	%rcx, %rax
 	movzbl	(%rax), %eax
 	movb	%al, (%rdx)
 	addl	$4, -4(%rbp)
 	addl	$1, -8(%rbp)
-.L46:
+.L48:
 	movl	-4(%rbp), %eax
 	cmpl	-16(%rbp), %eax
-	jb	.L49
+	jb	.L51
 	nop
 	leave
 	.cfi_def_cfa 7, 8
@@ -1339,8 +1411,8 @@ doYTransform:
 	movsd	%xmm0, -24(%rbp)
 	movl	$0, -4(%rbp)
 	movl	$0, -8(%rbp)
-	jmp	.L52
-.L55:
+	jmp	.L54
+.L57:
 	movq	-56(%rbp), %rax
 	movzwl	32(%rax), %eax
 	movzwl	%ax, %esi
@@ -1349,11 +1421,11 @@ doYTransform:
 	divl	%esi
 	movl	%eax, %eax
 	testq	%rax, %rax
-	js	.L53
+	js	.L55
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
-	jmp	.L54
-.L53:
+	jmp	.L56
+.L55:
 	movq	%rax, %rdx
 	shrq	%rdx
 	andl	$1, %eax
@@ -1361,7 +1433,7 @@ doYTransform:
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rdx, %xmm0
 	addsd	%xmm0, %xmm0
-.L54:
+.L56:
 	call	floor
 	cvttsd2si	%xmm0, %eax
 	movw	%ax, -26(%rbp)
@@ -1439,10 +1511,10 @@ doYTransform:
 	movb	%al, (%rdx)
 	addl	$4, -4(%rbp)
 	addl	$1, -8(%rbp)
-.L52:
+.L54:
 	movl	-4(%rbp), %eax
 	cmpl	-12(%rbp), %eax
-	jb	.L55
+	jb	.L57
 	nop
 	leave
 	.cfi_def_cfa 7, 8
@@ -1509,16 +1581,16 @@ drawAsset:
 	movq	-40(%rbp), %rax
 	movzwl	34(%rax), %eax
 	cmpw	-10(%rbp), %ax
-	je	.L58
+	je	.L60
 	movzwl	-10(%rbp), %ecx
 	movq	-40(%rbp), %rax
 	movq	-24(%rbp), %rdx
 	movl	%ecx, %esi
 	movq	%rax, %rdi
 	call	doYTransform
-.L58:
+.L60:
 	cmpb	$0, -64(%rbp)
-	je	.L59
+	je	.L61
 	movl	$.LC15, %edi
 	call	puts
 	movq	-40(%rbp), %rax
@@ -1526,21 +1598,30 @@ drawAsset:
 	movzwl	%ax, %edx
 	movzwl	-10(%rbp), %eax
 	imulq	%rdx, %rax
-	salq	$2, %rax
+	leaq	0(,%rax,4), %rdx
+	movq	-40(%rbp), %rax
+	movzwl	32(%rax), %eax
+	movzwl	%ax, %ecx
+	movzwl	-10(%rbp), %eax
+	imull	%ecx, %eax
+	sall	$2, %eax
+	cltq
+	movq	%rdx, %rsi
 	movq	%rax, %rdi
-	call	malloc
+	call	calloc
 	movq	%rax, -8(%rbp)
 	movq	-40(%rbp), %rax
 	movzwl	34(%rax), %eax
 	cmpw	-10(%rbp), %ax
-	jne	.L60
+	jne	.L62
 	movq	-40(%rbp), %rax
 	movq	40(%rax), %rax
-	jmp	.L61
-.L60:
+	jmp	.L63
+.L62:
 	movq	-24(%rbp), %rax
-.L61:
+.L63:
 	movzbl	-64(%rbp), %edx
+	movsbl	%dl, %edx
 	movzwl	-10(%rbp), %esi
 	movq	-40(%rbp), %rcx
 	movzwl	32(%rcx), %ecx
@@ -1549,26 +1630,26 @@ drawAsset:
 	movq	%rcx, %r8
 	movq	%rax, %rcx
 	call	doATransform
-.L59:
+.L61:
 	movzwl	-10(%rbp), %ecx
 	movq	-40(%rbp), %rax
 	movzwl	32(%rax), %eax
 	movzwl	%ax, %edx
 	cmpb	$0, -64(%rbp)
-	jne	.L62
+	jne	.L64
 	movq	-40(%rbp), %rax
 	movzwl	34(%rax), %eax
 	cmpw	-10(%rbp), %ax
-	jne	.L63
+	jne	.L65
 	movq	-40(%rbp), %rax
 	movq	40(%rax), %rax
-	jmp	.L65
-.L63:
-	movq	-24(%rbp), %rax
-	jmp	.L65
-.L62:
-	movq	-8(%rbp), %rax
+	jmp	.L67
 .L65:
+	movq	-24(%rbp), %rax
+	jmp	.L67
+.L64:
+	movq	-8(%rbp), %rax
+.L67:
 	movq	visual(%rip), %rsi
 	movq	session(%rip), %rdi
 	pushq	$0
@@ -1602,18 +1683,18 @@ drawAsset:
 	movq	-40(%rbp), %rax
 	movzwl	34(%rax), %eax
 	cmpw	-10(%rbp), %ax
-	je	.L66
+	je	.L68
 	movq	-24(%rbp), %rax
 	movq	%rax, %rdi
 	call	free
-.L66:
+.L68:
 	cmpb	$0, -64(%rbp)
-	je	.L69
+	je	.L71
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	free
 	nop
-.L69:
+.L71:
 	nop
 	leave
 	.cfi_def_cfa 7, 8
@@ -1679,7 +1760,13 @@ draw3d:
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XAllocColor
-	movq	-16(%rbp), %rdx
+	movq	session(%rip), %rax
+	movq	232(%rax), %rax
+	movzbl	cur_screen(%rip), %edx
+	movzbl	%dl, %edx
+	salq	$7, %rdx
+	addq	%rdx, %rax
+	movq	96(%rax), %rdx
 	movq	gc(%rip), %rcx
 	movq	session(%rip), %rax
 	movq	%rcx, %rsi
@@ -1705,7 +1792,13 @@ draw3d:
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XAllocColor
-	movq	-32(%rbp), %rdx
+	movq	session(%rip), %rax
+	movq	232(%rax), %rax
+	movzbl	cur_screen(%rip), %edx
+	movzbl	%dl, %edx
+	salq	$7, %rdx
+	addq	%rdx, %rax
+	movq	96(%rax), %rdx
 	movq	gc(%rip), %rcx
 	movq	session(%rip), %rax
 	movq	%rcx, %rsi
@@ -1745,6 +1838,20 @@ draw3d:
 	movss	.LC18(%rip), %xmm0
 	movl	$12, %edi
 	call	drawAsset
+	movl	$114, %ecx
+	movl	$512, %edx
+	movl	$241, %esi
+	movss	.LC16(%rip), %xmm1
+	movss	.LC18(%rip), %xmm0
+	movl	$12, %edi
+	call	drawAsset
+	movl	$80, %ecx
+	movl	$572, %edx
+	movl	$241, %esi
+	movss	.LC16(%rip), %xmm1
+	movss	.LC17(%rip), %xmm0
+	movl	$12, %edi
+	call	drawAsset
 	movl	$147, %ecx
 	movl	$256, %edx
 	movl	$0, %esi
@@ -1773,11 +1880,11 @@ draw3d:
 	subq	%rax, %rdx
 	movq	%rdx, %rax
 	testq	%rax, %rax
-	js	.L71
+	js	.L73
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
-	jmp	.L72
-.L71:
+	jmp	.L74
+.L73:
 	movq	%rax, %rdx
 	shrq	%rdx
 	andl	$1, %eax
@@ -1785,7 +1892,7 @@ draw3d:
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rdx, %xmm0
 	addsd	%xmm0, %xmm0
-.L72:
+.L74:
 	movsd	.LC7(%rip), %xmm1
 	divsd	%xmm1, %xmm0
 	movl	$.LC20, %edi
@@ -1839,7 +1946,7 @@ main:
 	movq	%rax, session(%rip)
 	movq	session(%rip), %rax
 	testq	%rax, %rax
-	jne	.L75
+	jne	.L77
 	movq	__stderrp(%rip), %rax
 	movq	%rax, %rcx
 	movl	$19, %edx
@@ -1848,7 +1955,7 @@ main:
 	call	fwrite
 	movl	$1, %edi
 	call	exit
-.L75:
+.L77:
 	movq	session(%rip), %rax
 	movl	224(%rax), %eax
 	movb	%al, cur_screen(%rip)
@@ -1920,23 +2027,23 @@ main:
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
 	call	XFlush
-.L79:
+.L81:
 	movq	session(%rip), %rax
 	movl	$cur_event, %esi
 	movq	%rax, %rdi
 	call	XNextEvent
 	movl	cur_event(%rip), %eax
 	cmpl	$12, %eax
-	jne	.L76
+	jne	.L78
 	call	draw3d
 	call	finishBench
-	jmp	.L79
-.L76:
+	jmp	.L81
+.L78:
 	movl	cur_event(%rip), %eax
 	cmpl	$2, %eax
-	je	.L82
-	jmp	.L79
-.L82:
+	je	.L84
+	jmp	.L81
+.L84:
 	nop
 	movq	session(%rip), %rax
 	movq	%rax, %rdi

@@ -184,21 +184,18 @@ void getAPoints(dbyte x, dbyte y, double *factors, struct coords *coords)
 	return;
 }
 
-void doATransform(dbyte width, dbyte height, byte deg, byte *buffer, byte *buffer2)
+void doATransform(dbyte width, dbyte height, char deg, byte *buffer, byte *buffer2)
 {
-    //calculate factors (tan10), get new coords
     struct coords ncoords;
     int_u i, j, index, data_length;
     dbyte x,y, diff;
-    diff = floor(width * tan(deg * (M_PI/180)));
+    diff = floor(width * tan(abs(deg) * (M_PI/180)));
     data_length = sizeof(byte)*width*height*4;
-    double points[] = {width,0,width,height,0,height,0,0,width-diff*2,diff,width-diff*2,height-diff,0,height,0,0},factors[8];
-    solveAffineMatrix(factors,points);
-	    // for(i=0;i<data_length;i++)
-	    // {
-	    // 	buffer2[i] = 0;
-	    // }
-    
+    double points1[] = {width,0,width,height,0,height,0,0,width-diff*2,diff,width-diff*2,height-diff,0,height,0,0},points2[] = {width,0,width,height,0,height,0,0,width-diff*2,0,width-diff*2,height,0,height-diff,0,diff},factors[8];
+
+    if(deg < 0) solveAffineMatrix(factors,points2);
+    else solveAffineMatrix(factors,points1);
+
     for(i=0,j=0;i<data_length;i+=4,j++)
     {
 		y = floor(j / width);

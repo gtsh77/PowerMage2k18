@@ -103,7 +103,7 @@ void loadAssetItem(struct asset *);
 void getAssetById(byte, struct asset **);
 void solveAffineMatrix(double *, double *);
 void getAPoints(dbyte, dbyte, double *, struct coords *);
-void doATransform(dbyte, dbyte, byte, byte *, byte *);
+void doATransform(dbyte, dbyte, char, byte *, byte *);
 void doYTransform(struct asset *, dbyte , byte *);
 void drawAsset(byte, float, float, byte, dbyte, dbyte);
 

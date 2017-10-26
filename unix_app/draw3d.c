@@ -81,9 +81,13 @@ void draw3d(void)
 
 	//test visualisation
 
+	//left
 	drawAsset(12, 1.245, 1, 15, CENTERX-5*128/2 + 8, CENTERY-256*1.245/2);
 	drawAsset(12, 0.98, 1, 15, CENTERX-4*128/2 + 4, CENTERY-256*0.98/2);
-
+	//right
+	drawAsset(12, 0.98, 1, -15, CENTERX+3*128/2, CENTERY-256*0.98/2);
+	drawAsset(12, 1.245, 1, -15, CENTERX+4*128/2 - 4, CENTERY-256*1.245/2);
+	//center
 	drawAsset(12, 0.72, 1, 0, CENTERX-128/2, CENTERY-256*0.72/2);
 	drawAsset(12, 0.72, 1, 0, CENTERX+128/2, CENTERY-256*0.72/2);
 	drawAsset(12, 0.72, 1, 0, CENTERX-3*128/2, CENTERY-256*0.72/2);	
@@ -98,9 +102,3 @@ void draw3d(void)
 	#endif
 	return;
 }
-
-
-
-
-
-
