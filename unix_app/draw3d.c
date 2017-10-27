@@ -75,28 +75,57 @@ void draw3d(void)
 
 	playerIndex = getPlayer(level.map,level.length);
 	//printf("%d\n",playerIndex);
-	#ifdef SB
+	#ifdef RB	
 	start = getCycles();
 	#endif
 
-	//test visualisation
+	//60 FPS test
+	byte i;
+	long_u start2, end2;
+	start2 = getCycles();
+	for(i=0;i<10;i++)
+	{
+		start = getCycles();
+		//test visualisation
+		struct asset *asset;
+		//floor
+		getAssetById(14,&asset);
+		drawAsset(asset, 2, 1, 105, CENTERX-asset->width/2*3, 370, 3);
+		//walls	
+	 	getAssetById(12,&asset);
+		//left
+		drawAsset(asset, 1.25, 1, 15, CENTERX-5*asset->width/2 + 4, CENTERY-asset->height*1.25/2, 2);
+		//center
+		drawAsset(asset, 0.74, 1, 0, CENTERX-asset->width/2*3, CENTERY-asset->height*0.74/2, 3);
+		//right
+		drawAsset(asset, 1.25, 1, -15, CENTERX+3*asset->width/2 + 0, CENTERY-asset->height*1.25/2, 2);
+		end = getCycles();
+		printf("Render[%d]: %.9f\n",i,(double)(end-start)/3.5e9);
+	}
+		end2 = getCycles();
+		printf("Time[%d]: %.9f",i,(double)(end2-start2)/3.5e9);
+	//60 FPS test end
 
-	//left
-	drawAsset(12, 1.245, 1, 15, CENTERX-5*128/2 + 8, CENTERY-256*1.245/2);
-	drawAsset(12, 0.98, 1, 15, CENTERX-4*128/2 + 4, CENTERY-256*0.98/2);
-	//right
-	drawAsset(12, 0.98, 1, -15, CENTERX+3*128/2, CENTERY-256*0.98/2);
-	drawAsset(12, 1.245, 1, -15, CENTERX+4*128/2 - 4, CENTERY-256*1.245/2);
-	//center
-	drawAsset(12, 0.72, 1, 0, CENTERX-128/2, CENTERY-256*0.72/2);
-	drawAsset(12, 0.72, 1, 0, CENTERX+128/2, CENTERY-256*0.72/2);
-	drawAsset(12, 0.72, 1, 0, CENTERX-3*128/2, CENTERY-256*0.72/2);	
+
+	// //test visualisation
+	// struct asset *asset;
+	// //floor
+	// getAssetById(14,&asset);
+	// drawAsset(asset, 2, 1, 105, CENTERX-asset->width/2*3, 370, 3);
+	// //walls	
+ // 	 getAssetById(12,&asset);
+	// //left
+	// drawAsset(asset, 1.25, 1, 15, CENTERX-5*asset->width/2 + 4, CENTERY-asset->height*1.25/2, 2);
+	// //center
+	// drawAsset(asset, 0.74, 1, 0, CENTERX-asset->width/2*3, CENTERY-asset->height*0.74/2, 3);
+	// //right
+	// drawAsset(asset, 1.25, 1, -15, CENTERX+3*asset->width/2 + 0, CENTERY-asset->height*1.25/2, 2);
 
 	//
 	// === BENCH STUFF
 	//
 
-	#ifdef SB
+	#ifdef RB	
 	end = getCycles();
 	printf("Render: %.9f\n",(double)(end-start)/3.5e9);
 	#endif

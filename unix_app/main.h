@@ -18,6 +18,7 @@
 #define CENTERY FIELDH/2
 #define BIT16(u) (u) * 255
 #define SB 1
+#define RB 1
 
 //own types
 typedef char byte_u;
@@ -103,9 +104,9 @@ void loadAssetItem(struct asset *);
 void getAssetById(byte, struct asset **);
 void solveAffineMatrix(double *, double *);
 void getAPoints(dbyte, dbyte, double *, struct coords *);
-void doATransform(dbyte, dbyte, char, byte *, byte *);
-void doYTransform(struct asset *, dbyte , byte *);
-void drawAsset(byte, float, float, byte, dbyte, dbyte);
+void doATransform(dbyte, dbyte, char, byte, byte *, byte *);
+void doYTransform(dbyte, dbyte, dbyte, byte *, byte *, int_u);
+void drawAsset(struct asset *, float, float, byte, dbyte, dbyte, byte);
 
 //mainframes
 void draw3d(void);

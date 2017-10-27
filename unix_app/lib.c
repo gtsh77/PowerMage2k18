@@ -137,7 +137,7 @@ void finishBench(void)
     totale = getCycles();
     getrusage(0, &rusage);
     printf("\n\n======== BENCHS ========\n\n");
-    printf("Total: %.9f\n",(double)(totale-totals)/3.5e9);
+    printf("Time: %.9f\n",(double)(totale-totals)/3.5e9);
     printf("Memory: %d\n",rusage.ru_maxrss);
     printf("\n======== BENCHS END ========\n");
     return;
@@ -184,16 +184,21 @@ void getAPoints(dbyte x, dbyte y, double *factors, struct coords *coords)
 	return;
 }
 
-void doATransform(dbyte width, dbyte height, char deg, byte *buffer, byte *buffer2)
+void doATransform(dbyte width, dbyte height, char deg, byte mult, byte *src_buffer, byte *buffer)
 {
     struct coords ncoords;
     int_u i, j, index, data_length;
-    dbyte x,y, diff;
-    diff = floor(width * tan(abs(deg) * (M_PI/180)));
-    data_length = sizeof(byte)*width*height*4;
-    double points1[] = {width,0,width,height,0,height,0,0,width-diff*2,diff,width-diff*2,height-diff,0,height,0,0},points2[] = {width,0,width,height,0,height,0,0,width-diff*2,0,width-diff*2,height,0,height-diff,0,diff},factors[8];
+    dbyte x,y, diff, dComp;
+    // if(deg <0) deg = -1 * deg;
+    // else if(deg > 90) deg = deg - 90;
+    // else ;
+    diff = floor(width * sin(abs(deg>90?deg-90:deg) * (M_PI/180)));
+    dComp = diff*2;
+    data_length = width*height*4;
+    double points1[] = {width,0,width,height,0,height,0,0,width-dComp,diff,width-dComp,height-diff,0,height,0,0},points2[] = {width,0,width,height,0,height,0,0,width-dComp,0,width-dComp,height,0,height-diff,0,diff},points3[] = {width,0,width,height,0,height,0,0,width-diff,0,width,height-dComp,0,height-dComp,diff,0},factors[8];
 
     if(deg < 0) solveAffineMatrix(factors,points2);
+    else if(deg > 90) solveAffineMatrix(factors,points3);
     else solveAffineMatrix(factors,points1);
 
     for(i=0,j=0;i<data_length;i+=4,j++)
@@ -202,69 +207,76 @@ void doATransform(dbyte width, dbyte height, char deg, byte *buffer, byte *buffe
 		x = j - y*width;
     	getAPoints(x,y,factors,&ncoords);
     	index = ncoords.x * 4 + ncoords.y * width * 4;
-		buffer2[index] = buffer[i];
-		buffer2[index + 1] = buffer[i + 1];
-		buffer2[index + 2] = buffer[i + 2];
-		buffer2[index + 3] = buffer[i + 3];
+		buffer[index] = src_buffer[i];
+		buffer[index + 1] = src_buffer[i + 1];
+		buffer[index + 2] = src_buffer[i + 2];
+		buffer[index + 3] = src_buffer[i + 3];
     }
     return;
 }
-void doYTransform(struct asset *asset, dbyte height, byte *buffer)
+void doYTransform(dbyte original_height, dbyte height, dbyte width, byte *src_buffer, byte *buffer, int_u buffer_length)
 {
-    int_u i, j, index, buffer_length;
+    int_u i, j, index;
     dbyte x, y, Y;
     double diff;
-    buffer_length = sizeof(byte)*asset->width*height*4;
+    //buffer_length = sizeof(byte)*asset->width*height*4;
 
-    diff = (double)(asset->height -1)/(double)(height-1);
+    diff = (double)(original_height -1)/(double)(height-1);
     
     for(i=0,j=0;i<buffer_length;i+=4,j++)
     {
-		y = floor(j / asset->width);
+		y = floor(j / width);
 		Y = round(y *diff);
-    	x = j - y*asset->width;
+    	x = j - y*width;
 		
-		index = Y * asset->width * 4 + x * 4;
+		index = Y * width * 4 + x * 4;
 
-		buffer[i] = asset->data[index];
-		buffer[i + 1] = asset->data[index + 1];
-		buffer[i + 2] = asset->data[index + 2];
-		buffer[i + 3] = asset->data[index + 3];
+		buffer[i] = src_buffer[index];
+		buffer[i + 1] = src_buffer[index + 1];
+		buffer[i + 2] = src_buffer[index + 2];
+		buffer[i + 3] = src_buffer[index + 3];
     }
     return;
 }
 
-void drawAsset(byte id, float h, float w, byte perspective, dbyte xsrc, dbyte ysrc)
+void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xsrc, dbyte ysrc, byte mult)
 {
-	//get address
-	struct asset *asset;
-    getAssetById(id,&asset);
     //chk width & height req
-    dbyte height, width;
+    dbyte height, width, i, j;
     height = trunc(asset->height * h);
-    width = trunc(asset->width * w);
-    //init buffer
-	byte *bitmap, *bitmap2;
-    bitmap = (byte *)malloc(sizeof(byte)*asset->width*height*4);
-
+    width = trunc(asset->width * w * mult);
+    int_u buffer_length = width*height*4;
+    int_u mem_line_length = sizeof(byte)*asset->width*4;
+    if(mult < 1) mult = 1;
+    //init buffers
+	byte *bitmap, *bitmap2, *bitmap3;
+    bitmap = (byte *)calloc(buffer_length,sizeof(byte)*buffer_length);
+    bitmap2 = (byte *)calloc(buffer_length,sizeof(byte)*buffer_length);
+    bitmap3 = (byte *)calloc(buffer_length,sizeof(byte)*buffer_length);
+    //copy data from asset src
+    for(j=0;j<mult;j++)
+    {
+    	for(i=0;i<asset->height;i++)
+	    {
+	    	memcpy(bitmap + mem_line_length*j + mem_line_length*mult*i, asset->data + mem_line_length*i, mem_line_length);
+	    }   	
+    }
     //do scale if nes
-    if(asset->height != height)	doYTransform(asset, height, bitmap);
+    if(asset->height != height)	doYTransform(asset->height, height, width, bitmap, bitmap2, buffer_length);
     //do pers if nes
     if(perspective > 0)	
     {
-    	printf("AT\n");
-	    //alloc next buffer
-	    bitmap2 = (byte *)calloc(asset->width*height*4,sizeof(byte)*asset->width*height*4);    	
-    	doATransform(asset->width, height, perspective, asset->height != height?bitmap:asset->data, bitmap2);
+    	doATransform(width, height, perspective, mult, asset->height != height?bitmap2:bitmap, bitmap3);
     }
     //aloc buffer on x-serv
 	XImage *xbitmap;
-	xbitmap = XCreateImage(session, visual, 24, ZPixmap, 0, (perspective > 0?bitmap2:(asset->height != height?bitmap:asset->data)), asset->width, height, 32, 0);
+	xbitmap = XCreateImage(session, visual, 24, ZPixmap, 0, (perspective > 0?bitmap3:(asset->height != height?bitmap2:bitmap)), asset->width*mult, height, 32, 0);
 	//transfer & render
-	XPutImage(session, window, gc, xbitmap, 0, 0, xsrc, ysrc, width, height);
+	XPutImage(session, window, gc, xbitmap, 0, 0, xsrc, ysrc, width*mult, height);
 	//free buffers
-	if(asset->height != height)	free(bitmap);
-	if(perspective > 0) free(bitmap2);
+	free(bitmap);
+	free(bitmap2);
+	free(bitmap3);
 	
 	return;
     	
