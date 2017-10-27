@@ -184,7 +184,7 @@ void getAPoints(dbyte x, dbyte y, double *factors, struct coords *coords)
 	return;
 }
 
-void doATransform(dbyte width, dbyte height, char deg, byte mult, byte *src_buffer, byte *buffer)
+void doATransform(dbyte width, dbyte height, char deg, byte mult, byte *src_buffer, byte *buffer, double *points)
 {
     struct coords ncoords;
     int_u i, j, index, data_length;
@@ -195,11 +195,67 @@ void doATransform(dbyte width, dbyte height, char deg, byte mult, byte *src_buff
     diff = floor(width * sin(abs(deg>90?deg-90:deg) * (M_PI/180)));
     dComp = diff*2;
     data_length = width*height*4;
-    double points1[] = {width,0,width,height,0,height,0,0,width-dComp,diff,width-dComp,height-diff,0,height,0,0},points2[] = {width,0,width,height,0,height,0,0,width-dComp,0,width-dComp,height,0,height-diff,0,diff},points3[] = {width,0,width,height,0,height,0,0,width-diff,0,width,height-dComp,0,height-dComp,diff,0},factors[8];
+    double factors[8];
+    //double points1[] = {width,0,width,height,0,height,0,0,width-dComp,diff,width-dComp,height-diff,0,height,0,0},points2[] = {width,0,width,height,0,height,0,0,width-dComp,0,width-dComp,height,0,height-diff,0,diff},points3[] = {width,0,width,height,0,height,0,0,width-diff,0,width,height-dComp,0,height-dComp,diff,0},factors[8];
 
-    if(deg < 0) solveAffineMatrix(factors,points2);
-    else if(deg > 90) solveAffineMatrix(factors,points3);
-    else solveAffineMatrix(factors,points1);
+    if(deg < 0)
+    {
+    	points[0] = width;
+    	points[1] = 0;
+    	points[2] = width;
+    	points[3] = height;
+    	points[4] = 0;
+    	points[5] = height;
+    	points[6] = 0;
+    	points[7] = 0;
+    	points[8] = width-dComp;
+    	points[9] = 0;
+    	points[10] = width-dComp;
+    	points[11] = height;
+    	points[12] = 0;
+    	points[13] = height-diff;
+    	points[14] = 0;
+    	points[15] = diff;
+    }
+    else if(deg > 90)
+    {
+    	points[0] = width;
+    	points[1] = 0;
+    	points[2] = width;
+    	points[3] = height;
+    	points[4] = 0;
+    	points[5] = height;
+    	points[6] = 0;
+    	points[7] = 0;
+    	points[8] = width-diff;
+    	points[9] = 0;
+    	points[10] = width;
+    	points[11] = height - dComp;
+    	points[12] = 0;
+    	points[13] = height-dComp;
+    	points[14] = diff;
+    	points[15] = 0;    	
+    }
+    else
+    {
+    	points[0] = width;
+    	points[1] = 0;
+    	points[2] = width;
+    	points[3] = height;
+    	points[4] = 0;
+    	points[5] = height;
+    	points[6] = 0;
+    	points[7] = 0;
+    	points[8] = width-dComp;
+    	points[9] = diff;
+    	points[10] = width-dComp;
+    	points[11] = height-diff;
+    	points[12] = 0;
+    	points[13] = height;
+    	points[14] = 0;
+    	points[15] = 0;     	
+    }
+    solveAffineMatrix(factors,points);
 
     for(i=0,j=0;i<data_length;i+=4,j++)
     {
@@ -247,6 +303,10 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
     width = trunc(asset->width * w * mult);
     int_u buffer_length = width*height*4;
     int_u mem_line_length = sizeof(byte)*asset->width*4;
+    double points[16];
+    Pixmap clipMask;
+    GC clipMaskGC;
+
     if(mult < 1) mult = 1;
     //init buffers
 	byte *bitmap, *bitmap2, *bitmap3;
@@ -261,13 +321,48 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
 	    	memcpy(bitmap + mem_line_length*j + mem_line_length*mult*i, asset->data + mem_line_length*i, mem_line_length);
 	    }   	
     }
+	//create clip mask
+	clipMask = XCreatePixmap(session, window, width, height, 1);
+	clipMaskGC = XCreateGC(session, clipMask, 0, 0);    
     //do scale if nes
-    if(asset->height != height)	doYTransform(asset->height, height, width, bitmap, bitmap2, buffer_length);
+    if(asset->height != height)
+    {
+    	//calc stuff
+    	doYTransform(asset->height, height, width, bitmap, bitmap2, buffer_length);
+		//full area
+		XSetForeground(session, clipMaskGC, BlackPixel(session, cur_screen));
+		XFillRectangle(session, clipMask, clipMaskGC, 0, 0, width, height);
+		//visible area
+		XSetForeground(session, clipMaskGC, WhitePixel(session, cur_screen));
+		XFillRectangle(session, clipMask, clipMaskGC, 0, 0, width, height);
+		//clip
+		XSetClipMask(session, gc, clipMask);
+		XSetClipOrigin(session, gc, xsrc, ysrc);
+    }
     //do pers if nes
     if(perspective > 0)	
     {
-    	doATransform(width, height, perspective, mult, asset->height != height?bitmap2:bitmap, bitmap3);
+    	//calc stuff
+    	doATransform(width, height, perspective, mult, asset->height != height?bitmap2:bitmap, bitmap3, points);
+		//full area
+		XSetForeground(session, clipMaskGC, BlackPixel(session, cur_screen));
+		XFillRectangle(session, clipMask, clipMaskGC, 0, 0, width, height);    	
+    	//points for vis
+		XPoint xpoints[] = 
+		{
+			{points[8],points[9]},
+			{points[10],points[11]},
+			{points[12],points[13]},
+			{points[14],points[15]}
+		};
+		//visible area
+		XSetForeground(session, clipMaskGC, WhitePixel(session, cur_screen));
+		XFillPolygon(session, clipMask, clipMaskGC, xpoints, 4, Complex, CoordModeOrigin);	
+		//clip
+		XSetClipMask(session, gc, clipMask);
+		XSetClipOrigin(session, gc, xsrc, ysrc);    		
     }
+
     //aloc buffer on x-serv
 	XImage *xbitmap;
 	xbitmap = XCreateImage(session, visual, 24, ZPixmap, 0, (perspective > 0?bitmap3:(asset->height != height?bitmap2:bitmap)), asset->width*mult, height, 32, 0);
@@ -277,7 +372,9 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
 	free(bitmap);
 	free(bitmap2);
 	free(bitmap3);
-	
+	//free pixmap
+	XFreePixmap(session, clipMask);
+
 	return;
     	
 }

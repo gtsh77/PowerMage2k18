@@ -33,19 +33,18 @@ int main(void)
     {
         fprintf(stderr, "Cannot open server\n");
         exit(1);
-    }
+    }     
  
     //get screen id from xserv
     cur_screen = (byte)DefaultScreen(session);
-
-    XSetWindowAttributes wattributes;
     visual = DefaultVisual(session, DefaultScreen(session));
+
     gc_mask = GCCapStyle | GCJoinStyle;
     gc_val.cap_style = CapButt;
     gc_val.join_style = JoinBevel;
+
     window = XCreateSimpleWindow(session, RootWindow(session, cur_screen), 0, 0, FIELDW, FIELDH, 0, BlackPixel(session, cur_screen), WhitePixel(session, cur_screen));
-    //window =  XCreateWindow(session, RootWindow(session, cur_screen), 0, 0, FIELDW, FIELDH, 0, 32, InputOutput, visual, 0, &wattributes);
-    //pixmap = XCreatePixmap(session, XDefaultRootWindow(session), FIELDW, FIELDH, 32);
+    colormap = XCreateColormap(session, window, visual, AllocNone);
     gc = XCreateGC(session, window, gc_mask, &gc_val);
  
     //select events??

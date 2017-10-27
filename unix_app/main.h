@@ -9,11 +9,13 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <gsl/gsl_linalg.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/Xcomposite.h>
 
 #ifndef _MAIN_H
 #define _MAIN_H
-#define FIELDW 640
-#define FIELDH 480
+#define FIELDW 620
+#define FIELDH 380
 #define CENTERX FIELDW/2
 #define CENTERY FIELDH/2
 #define BIT16(u) (u) * 255
@@ -104,7 +106,7 @@ void loadAssetItem(struct asset *);
 void getAssetById(byte, struct asset **);
 void solveAffineMatrix(double *, double *);
 void getAPoints(dbyte, dbyte, double *, struct coords *);
-void doATransform(dbyte, dbyte, char, byte, byte *, byte *);
+void doATransform(dbyte, dbyte, char, byte, byte *, byte *, double *);
 void doYTransform(dbyte, dbyte, dbyte, byte *, byte *, int_u);
 void drawAsset(struct asset *, float, float, byte, dbyte, dbyte, byte);
 
