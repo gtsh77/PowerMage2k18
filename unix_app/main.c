@@ -1,7 +1,24 @@
+// TRIX 3-D GAME ENGINE
+// Copyright (C) <2017>  <Anton Makridin>
+// Telegram: http://t.me/gtsh77, Email: me@anton-makridin.ru
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 #include "main.h"
 #include "draw3d.c"
 
-//base vars
+//define globals
 Display *session;
 Window window;
 XEvent cur_event;
@@ -14,20 +31,28 @@ Visual *visual;
 Pixmap pixmap;
 Colormap colormap;
 
+
 int main(void)
 {   
     #ifdef SB
-    //start bench
     totals = getCycles();
     #endif
-    
-    //load level from tct's binary output into memory
-    loadTileMap("../maps/unix1.json.bin");
-    //load and map textures into memory
-    loadAssets();
-    //seekAssets();
 
-    //connect to xserv
+    //
+    // === ENGINE INIT ===
+    //
+    //load binary tilemap and map into mem
+    loadTileMap("../maps/unix1.json.bin");
+    //load textures and map as bitmap into mem
+    loadAssets();
+    //alloc long buffers
+    buffer.bitmap = (byte *)malloc(sizeof(byte)*MAXTEXB*MAXTEXW*MAXTEXH*4);
+    buffer.bitmap2 = (byte *)malloc(sizeof(byte)*MAXTEXB*MAXTEXW*MAXTEXH*4);
+    buffer.bitmap3 = (byte *)malloc(sizeof(byte)*MAXTEXB*MAXTEXW*MAXTEXH*4);      
+
+    //
+    // === START X11 SESSION ===
+    // 
     session = XOpenDisplay(NULL);   
     if (session == NULL)
     {
@@ -35,7 +60,6 @@ int main(void)
         exit(1);
     }     
  
-    //get screen id from xserv
     cur_screen = (byte)DefaultScreen(session);
     visual = DefaultVisual(session, DefaultScreen(session));
 
@@ -47,18 +71,14 @@ int main(void)
     colormap = XCreateColormap(session, window, visual, AllocNone);
     gc = XCreateGC(session, window, gc_mask, &gc_val);
  
-    //select events??
     XSelectInput(session, window, ExposureMask | KeyPressMask);
  
-    //map => show the window
     XMapWindow(session, window);
     XFlush(session);
  
-    //event loop
     while(1)
     {
         XNextEvent(session, &cur_event); 
-        //draw
         if (cur_event.type == Expose)
         {
             draw3d();
@@ -67,17 +87,11 @@ int main(void)
             #endif
 
         }
-        //exit point
         else if (cur_event.type == KeyPress)
             break;
         else;
     }
 
-    //XSync(session,False);
-
-    //sleep(5);
- 
-    //bb to xserv
     XCloseDisplay(session);
     return 0;
  }

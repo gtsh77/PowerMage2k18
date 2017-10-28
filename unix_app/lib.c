@@ -1,3 +1,20 @@
+// TRIX 3-D GAME ENGINE
+// Copyright (C) <2017>  <Anton Makridin>
+// Telegram: http://t.me/gtsh77, Email: me@anton-makridin.ru
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 long_u getCycles(void)
 {
 	long_u lo,hi;
@@ -177,7 +194,7 @@ void solveAffineMatrix(double *factors, double *points)
 	return;
 }
 
-void getAPoints(dbyte x, dbyte y, double *factors, struct coords *coords)
+void getAPoints(dbyte x, dbyte y, double *factors, coords *coords)
 {
 	coords->x = trunc((factors[0] * x + factors[1] * y + factors[2])/(factors[6] * x + factors[7] * y + 1));
 	coords->y = trunc((factors[3] * x + factors[4] * y + factors[5])/(factors[6] * x + factors[7] * y + 1));
@@ -186,7 +203,7 @@ void getAPoints(dbyte x, dbyte y, double *factors, struct coords *coords)
 
 void doATransform(dbyte width, dbyte height, char deg, byte mult, byte *src_buffer, byte *buffer, double *points)
 {
-    struct coords ncoords;
+    coords ncoords;
     int_u i, j, index, data_length;
     dbyte x,y, diff, dComp;
     // if(deg <0) deg = -1 * deg;
@@ -308,19 +325,21 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
     GC clipMaskGC;
 
     if(mult < 1) mult = 1;
-    //init buffers
-	byte *bitmap, *bitmap2, *bitmap3;
-    bitmap = (byte *)calloc(buffer_length,sizeof(byte)*buffer_length);
-    bitmap2 = (byte *)calloc(buffer_length,sizeof(byte)*buffer_length);
-    bitmap3 = (byte *)calloc(buffer_length,sizeof(byte)*buffer_length);
+
+    //clear long buffers
+    memset(buffer.bitmap, 0, sizeof(byte)*buffer_length);
+    memset(buffer.bitmap2, 0, sizeof(byte)*buffer_length);
+    memset(buffer.bitmap3, 0, sizeof(byte)*buffer_length);
+
     //copy data from asset src
     for(j=0;j<mult;j++)
     {
     	for(i=0;i<asset->height;i++)
 	    {
-	    	memcpy(bitmap + mem_line_length*j + mem_line_length*mult*i, asset->data + mem_line_length*i, mem_line_length);
+	    	memcpy(buffer.bitmap + mem_line_length*j + mem_line_length*mult*i, asset->data + mem_line_length*i, mem_line_length);
 	    }   	
     }
+
 	//create clip mask
 	clipMask = XCreatePixmap(session, window, width, height, 1);
 	clipMaskGC = XCreateGC(session, clipMask, 0, 0);    
@@ -328,7 +347,7 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
     if(asset->height != height)
     {
     	//calc stuff
-    	doYTransform(asset->height, height, width, bitmap, bitmap2, buffer_length);
+    	doYTransform(asset->height, height, width, buffer.bitmap, buffer.bitmap2, buffer_length);
 		//full area
 		XSetForeground(session, clipMaskGC, BlackPixel(session, cur_screen));
 		XFillRectangle(session, clipMask, clipMaskGC, 0, 0, width, height);
@@ -343,7 +362,7 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
     if(perspective > 0)	
     {
     	//calc stuff
-    	doATransform(width, height, perspective, mult, asset->height != height?bitmap2:bitmap, bitmap3, points);
+    	doATransform(width, height, perspective, mult, asset->height != height?buffer.bitmap2:buffer.bitmap, buffer.bitmap3, points);
 		//full area
 		XSetForeground(session, clipMaskGC, BlackPixel(session, cur_screen));
 		XFillRectangle(session, clipMask, clipMaskGC, 0, 0, width, height);    	
@@ -365,13 +384,9 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
 
     //aloc buffer on x-serv
 	XImage *xbitmap;
-	xbitmap = XCreateImage(session, visual, 24, ZPixmap, 0, (perspective > 0?bitmap3:(asset->height != height?bitmap2:bitmap)), asset->width*mult, height, 32, 0);
+	xbitmap = XCreateImage(session, visual, 24, ZPixmap, 0, (perspective > 0?buffer.bitmap3:(asset->height != height?buffer.bitmap2:buffer.bitmap)), asset->width*mult, height, 32, 0);
 	//transfer & render
 	XPutImage(session, window, gc, xbitmap, 0, 0, xsrc, ysrc, width*mult, height);
-	//free buffers
-	free(bitmap);
-	free(bitmap2);
-	free(bitmap3);
 	//free pixmap
 	XFreePixmap(session, clipMask);
 

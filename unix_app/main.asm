@@ -1,5 +1,9 @@
 	.file	"main.c"
+	.comm	buffer,24,16
 	.comm	level,16,16
+	.comm	e,8,8
+	.comm	l,8,8
+	.comm	f,8,8
 	.globl	objNames
 	.data
 	.align 32
@@ -35,9 +39,6 @@ objIds:
 	.byte	15
 	.byte	16
 	.byte	17
-	.comm	e,8,8
-	.comm	l,8,8
-	.comm	f,8,8
 	.text
 	.globl	getCycles
 	.type	getCycles, @function
@@ -1685,34 +1686,34 @@ drawAsset:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$240, %rsp
-	movq	%rdi, -216(%rbp)
-	movss	%xmm0, -220(%rbp)
-	movss	%xmm1, -224(%rbp)
+	subq	$224, %rsp
+	movq	%rdi, -200(%rbp)
+	movss	%xmm0, -204(%rbp)
+	movss	%xmm1, -208(%rbp)
 	movl	%ecx, %eax
 	movl	%r8d, %ecx
-	movb	%sil, -228(%rbp)
-	movw	%dx, -232(%rbp)
-	movw	%ax, -236(%rbp)
-	movb	%cl, -240(%rbp)
-	movq	-216(%rbp), %rax
+	movb	%sil, -212(%rbp)
+	movw	%dx, -216(%rbp)
+	movw	%ax, -220(%rbp)
+	movb	%cl, -224(%rbp)
+	movq	-200(%rbp), %rax
 	movzwl	34(%rax), %eax
 	movzwl	%ax, %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2ss	%eax, %xmm0
-	mulss	-220(%rbp), %xmm0
+	mulss	-204(%rbp), %xmm0
 	cvtss2sd	%xmm0, %xmm0
 	call	trunc
 	cvttsd2si	%xmm0, %eax
 	movw	%ax, -6(%rbp)
-	movq	-216(%rbp), %rax
+	movq	-200(%rbp), %rax
 	movzwl	32(%rax), %eax
 	movzwl	%ax, %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2ss	%eax, %xmm0
 	movaps	%xmm0, %xmm1
-	mulss	-224(%rbp), %xmm1
-	movzbl	-240(%rbp), %eax
+	mulss	-208(%rbp), %xmm1
+	movzbl	-224(%rbp), %eax
 	pxor	%xmm0, %xmm0
 	cvtsi2ss	%eax, %xmm0
 	mulss	%xmm1, %xmm0
@@ -1725,33 +1726,30 @@ drawAsset:
 	imull	%edx, %eax
 	sall	$2, %eax
 	movl	%eax, -12(%rbp)
-	movq	-216(%rbp), %rax
+	movq	-200(%rbp), %rax
 	movzwl	32(%rax), %eax
 	movzwl	%ax, %eax
 	sall	$2, %eax
 	movl	%eax, -16(%rbp)
-	cmpb	$0, -240(%rbp)
+	cmpb	$0, -224(%rbp)
 	jne	.L63
-	movb	$1, -240(%rbp)
+	movb	$1, -224(%rbp)
 .L63:
 	movl	-12(%rbp), %edx
-	movl	-12(%rbp), %eax
-	movq	%rdx, %rsi
+	movq	buffer(%rip), %rax
+	movl	$0, %esi
 	movq	%rax, %rdi
-	call	calloc
-	movq	%rax, -24(%rbp)
+	call	memset
 	movl	-12(%rbp), %edx
-	movl	-12(%rbp), %eax
-	movq	%rdx, %rsi
+	movq	buffer+8(%rip), %rax
+	movl	$0, %esi
 	movq	%rax, %rdi
-	call	calloc
-	movq	%rax, -32(%rbp)
+	call	memset
 	movl	-12(%rbp), %edx
-	movl	-12(%rbp), %eax
-	movq	%rdx, %rsi
+	movq	buffer+16(%rip), %rax
+	movl	$0, %esi
 	movq	%rax, %rdi
-	call	calloc
-	movq	%rax, -40(%rbp)
+	call	memset
 	movw	$0, -4(%rbp)
 	jmp	.L64
 .L67:
@@ -1759,23 +1757,23 @@ drawAsset:
 	jmp	.L65
 .L66:
 	movl	-16(%rbp), %eax
-	movq	-216(%rbp), %rdx
+	movq	-200(%rbp), %rdx
 	movq	40(%rdx), %rcx
 	movzwl	-2(%rbp), %edx
 	imull	-16(%rbp), %edx
 	movl	%edx, %edx
 	leaq	(%rcx,%rdx), %rsi
+	movq	buffer(%rip), %rcx
 	movzwl	-4(%rbp), %edx
 	imull	-16(%rbp), %edx
+	movl	%edx, %r8d
+	movzbl	-224(%rbp), %edx
 	movl	%edx, %edi
-	movzbl	-240(%rbp), %edx
-	movl	%edx, %ecx
-	imull	-16(%rbp), %ecx
+	imull	-16(%rbp), %edi
 	movzwl	-2(%rbp), %edx
-	imull	%ecx, %edx
+	imull	%edi, %edx
 	movl	%edx, %edx
-	leaq	(%rdi,%rdx), %rcx
-	movq	-24(%rbp), %rdx
+	addq	%r8, %rdx
 	addq	%rdx, %rcx
 	movq	%rax, %rdx
 	movq	%rcx, %rdi
@@ -1784,7 +1782,7 @@ drawAsset:
 	addl	$1, %eax
 	movw	%ax, -2(%rbp)
 .L65:
-	movq	-216(%rbp), %rax
+	movq	-200(%rbp), %rax
 	movzwl	34(%rax), %eax
 	cmpw	-2(%rbp), %ax
 	ja	.L66
@@ -1792,7 +1790,7 @@ drawAsset:
 	addl	$1, %eax
 	movw	%ax, -4(%rbp)
 .L64:
-	movzbl	-240(%rbp), %eax
+	movzbl	-224(%rbp), %eax
 	cmpw	-4(%rbp), %ax
 	ja	.L67
 	movzwl	-6(%rbp), %ecx
@@ -1802,26 +1800,26 @@ drawAsset:
 	movl	$1, %r8d
 	movq	%rax, %rdi
 	call	XCreatePixmap
-	movq	%rax, -48(%rbp)
+	movq	%rax, -24(%rbp)
 	movq	session(%rip), %rax
-	movq	-48(%rbp), %rsi
+	movq	-24(%rbp), %rsi
 	movl	$0, %ecx
 	movl	$0, %edx
 	movq	%rax, %rdi
 	call	XCreateGC
-	movq	%rax, -56(%rbp)
-	movq	-216(%rbp), %rax
+	movq	%rax, -32(%rbp)
+	movq	-200(%rbp), %rax
 	movzwl	34(%rax), %eax
 	cmpw	-6(%rbp), %ax
 	je	.L68
+	movq	buffer+8(%rip), %rdi
+	movq	buffer(%rip), %rcx
 	movzwl	-8(%rbp), %edx
 	movzwl	-6(%rbp), %esi
-	movq	-216(%rbp), %rax
+	movq	-200(%rbp), %rax
 	movzwl	34(%rax), %eax
 	movzwl	%ax, %eax
 	movl	-12(%rbp), %r8d
-	movq	-32(%rbp), %rdi
-	movq	-24(%rbp), %rcx
 	movl	%r8d, %r9d
 	movq	%rdi, %r8
 	movl	%eax, %edi
@@ -1834,15 +1832,15 @@ drawAsset:
 	addq	%rdx, %rax
 	movq	96(%rax), %rdx
 	movq	session(%rip), %rax
-	movq	-56(%rbp), %rcx
+	movq	-32(%rbp), %rcx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XSetForeground
 	movzwl	-6(%rbp), %ecx
 	movzwl	-8(%rbp), %edi
 	movq	session(%rip), %rax
-	movq	-56(%rbp), %rdx
-	movq	-48(%rbp), %rsi
+	movq	-32(%rbp), %rdx
+	movq	-24(%rbp), %rsi
 	subq	$8, %rsp
 	pushq	%rcx
 	movl	%edi, %r9d
@@ -1859,15 +1857,15 @@ drawAsset:
 	addq	%rdx, %rax
 	movq	88(%rax), %rdx
 	movq	session(%rip), %rax
-	movq	-56(%rbp), %rcx
+	movq	-32(%rbp), %rcx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XSetForeground
 	movzwl	-6(%rbp), %ecx
 	movzwl	-8(%rbp), %edi
 	movq	session(%rip), %rax
-	movq	-56(%rbp), %rdx
-	movq	-48(%rbp), %rsi
+	movq	-32(%rbp), %rdx
+	movq	-24(%rbp), %rsi
 	subq	$8, %rsp
 	pushq	%rcx
 	movl	%edi, %r9d
@@ -1878,36 +1876,36 @@ drawAsset:
 	addq	$16, %rsp
 	movq	gc(%rip), %rcx
 	movq	session(%rip), %rax
-	movq	-48(%rbp), %rdx
+	movq	-24(%rbp), %rdx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XSetClipMask
-	movzwl	-236(%rbp), %ecx
-	movzwl	-232(%rbp), %edx
+	movzwl	-220(%rbp), %ecx
+	movzwl	-216(%rbp), %edx
 	movq	gc(%rip), %rsi
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
 	call	XSetClipOrigin
 .L68:
-	cmpb	$0, -228(%rbp)
+	cmpb	$0, -212(%rbp)
 	je	.L69
-	movq	-216(%rbp), %rax
+	movq	buffer+16(%rip), %r9
+	movq	-200(%rbp), %rax
 	movzwl	34(%rax), %eax
 	cmpw	-6(%rbp), %ax
 	je	.L70
-	movq	-32(%rbp), %rax
+	movq	buffer+8(%rip), %rax
 	jmp	.L71
 .L70:
-	movq	-24(%rbp), %rax
+	movq	buffer(%rip), %rax
 .L71:
-	movzbl	-240(%rbp), %ecx
-	movzbl	-228(%rbp), %edx
+	movzbl	-224(%rbp), %ecx
+	movzbl	-212(%rbp), %edx
 	movsbl	%dl, %edx
 	movzwl	-6(%rbp), %esi
 	movzwl	-8(%rbp), %edi
-	movq	-40(%rbp), %r9
 	subq	$8, %rsp
-	leaq	-192(%rbp), %r8
+	leaq	-176(%rbp), %r8
 	pushq	%r8
 	movq	%rax, %r8
 	call	doATransform
@@ -1920,15 +1918,15 @@ drawAsset:
 	addq	%rdx, %rax
 	movq	96(%rax), %rdx
 	movq	session(%rip), %rax
-	movq	-56(%rbp), %rcx
+	movq	-32(%rbp), %rcx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XSetForeground
 	movzwl	-6(%rbp), %ecx
 	movzwl	-8(%rbp), %edi
 	movq	session(%rip), %rax
-	movq	-56(%rbp), %rdx
-	movq	-48(%rbp), %rsi
+	movq	-32(%rbp), %rdx
+	movq	-24(%rbp), %rsi
 	subq	$8, %rsp
 	pushq	%rcx
 	movl	%edi, %r9d
@@ -1937,30 +1935,30 @@ drawAsset:
 	movq	%rax, %rdi
 	call	XFillRectangle
 	addq	$16, %rsp
-	movsd	-128(%rbp), %xmm0
-	cvttsd2si	%xmm0, %eax
-	movw	%ax, -208(%rbp)
-	movsd	-120(%rbp), %xmm0
-	cvttsd2si	%xmm0, %eax
-	movw	%ax, -206(%rbp)
 	movsd	-112(%rbp), %xmm0
 	cvttsd2si	%xmm0, %eax
-	movw	%ax, -204(%rbp)
+	movw	%ax, -192(%rbp)
 	movsd	-104(%rbp), %xmm0
 	cvttsd2si	%xmm0, %eax
-	movw	%ax, -202(%rbp)
+	movw	%ax, -190(%rbp)
 	movsd	-96(%rbp), %xmm0
 	cvttsd2si	%xmm0, %eax
-	movw	%ax, -200(%rbp)
+	movw	%ax, -188(%rbp)
 	movsd	-88(%rbp), %xmm0
 	cvttsd2si	%xmm0, %eax
-	movw	%ax, -198(%rbp)
+	movw	%ax, -186(%rbp)
 	movsd	-80(%rbp), %xmm0
 	cvttsd2si	%xmm0, %eax
-	movw	%ax, -196(%rbp)
+	movw	%ax, -184(%rbp)
 	movsd	-72(%rbp), %xmm0
 	cvttsd2si	%xmm0, %eax
-	movw	%ax, -194(%rbp)
+	movw	%ax, -182(%rbp)
+	movsd	-64(%rbp), %xmm0
+	cvttsd2si	%xmm0, %eax
+	movw	%ax, -180(%rbp)
+	movsd	-56(%rbp), %xmm0
+	cvttsd2si	%xmm0, %eax
+	movw	%ax, -178(%rbp)
 	movq	session(%rip), %rax
 	movq	232(%rax), %rax
 	movzbl	cur_screen(%rip), %edx
@@ -1969,14 +1967,14 @@ drawAsset:
 	addq	%rdx, %rax
 	movq	88(%rax), %rdx
 	movq	session(%rip), %rax
-	movq	-56(%rbp), %rcx
+	movq	-32(%rbp), %rcx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XSetForeground
 	movq	session(%rip), %rax
-	leaq	-208(%rbp), %rcx
-	movq	-56(%rbp), %rdx
-	movq	-48(%rbp), %rsi
+	leaq	-192(%rbp), %rcx
+	movq	-32(%rbp), %rdx
+	movq	-24(%rbp), %rsi
 	subq	$8, %rsp
 	pushq	$0
 	movl	$0, %r9d
@@ -1986,38 +1984,38 @@ drawAsset:
 	addq	$16, %rsp
 	movq	gc(%rip), %rcx
 	movq	session(%rip), %rax
-	movq	-48(%rbp), %rdx
+	movq	-24(%rbp), %rdx
 	movq	%rcx, %rsi
 	movq	%rax, %rdi
 	call	XSetClipMask
-	movzwl	-236(%rbp), %ecx
-	movzwl	-232(%rbp), %edx
+	movzwl	-220(%rbp), %ecx
+	movzwl	-216(%rbp), %edx
 	movq	gc(%rip), %rsi
 	movq	session(%rip), %rax
 	movq	%rax, %rdi
 	call	XSetClipOrigin
 .L69:
 	movzwl	-6(%rbp), %edx
-	movq	-216(%rbp), %rax
+	movq	-200(%rbp), %rax
 	movzwl	32(%rax), %eax
 	movzwl	%ax, %ecx
-	movzbl	-240(%rbp), %eax
+	movzbl	-224(%rbp), %eax
 	imull	%ecx, %eax
 	movl	%eax, %ecx
-	cmpb	$0, -228(%rbp)
-	jne	.L72
-	movq	-216(%rbp), %rax
+	cmpb	$0, -212(%rbp)
+	je	.L72
+	movq	buffer+16(%rip), %rax
+	jmp	.L73
+.L72:
+	movq	-200(%rbp), %rax
 	movzwl	34(%rax), %eax
 	cmpw	-6(%rbp), %ax
-	je	.L73
-	movq	-32(%rbp), %rax
-	jmp	.L75
+	je	.L74
+	movq	buffer+8(%rip), %rax
+	jmp	.L73
+.L74:
+	movq	buffer(%rip), %rax
 .L73:
-	movq	-24(%rbp), %rax
-	jmp	.L75
-.L72:
-	movq	-40(%rbp), %rax
-.L75:
 	movq	visual(%rip), %rsi
 	movq	session(%rip), %rdi
 	pushq	$0
@@ -2030,18 +2028,18 @@ drawAsset:
 	movl	$24, %edx
 	call	XCreateImage
 	addq	$32, %rsp
-	movq	%rax, -64(%rbp)
+	movq	%rax, -40(%rbp)
 	movzwl	-6(%rbp), %r9d
 	movzwl	-8(%rbp), %edx
-	movzbl	-240(%rbp), %eax
+	movzbl	-224(%rbp), %eax
 	imull	%edx, %eax
 	movl	%eax, %r10d
-	movzwl	-236(%rbp), %r8d
-	movzwl	-232(%rbp), %edi
+	movzwl	-220(%rbp), %r8d
+	movzwl	-216(%rbp), %edi
 	movq	gc(%rip), %rdx
 	movq	window(%rip), %rsi
 	movq	session(%rip), %rax
-	movq	-64(%rbp), %rcx
+	movq	-40(%rbp), %rcx
 	pushq	%r9
 	pushq	%r10
 	pushq	%r8
@@ -2051,17 +2049,8 @@ drawAsset:
 	movq	%rax, %rdi
 	call	XPutImage
 	addq	$32, %rsp
-	movq	-24(%rbp), %rax
-	movq	%rax, %rdi
-	call	free
-	movq	-32(%rbp), %rax
-	movq	%rax, %rdi
-	call	free
-	movq	-40(%rbp), %rax
-	movq	%rax, %rdi
-	call	free
 	movq	session(%rip), %rax
-	movq	-48(%rbp), %rdx
+	movq	-24(%rbp), %rdx
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	call	XFreePixmap
@@ -2345,7 +2334,7 @@ draw3d:
 	addl	$1, %eax
 	movb	%al, -1(%rbp)
 .L78:
-	cmpb	$4, -1(%rbp)
+	cmpb	$-57, -1(%rbp)
 	jbe	.L81
 	call	getCycles
 	movq	%rax, -24(%rbp)
@@ -2439,6 +2428,15 @@ main:
 	movl	$.LC26, %edi
 	call	loadTileMap
 	call	loadAssets
+	movl	$2621440, %edi
+	call	malloc
+	movq	%rax, buffer(%rip)
+	movl	$2621440, %edi
+	call	malloc
+	movq	%rax, buffer+8(%rip)
+	movl	$2621440, %edi
+	call	malloc
+	movq	%rax, buffer+16(%rip)
 	movl	$0, %edi
 	call	XOpenDisplay
 	movq	%rax, session(%rip)
