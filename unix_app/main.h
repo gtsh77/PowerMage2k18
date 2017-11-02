@@ -1,5 +1,5 @@
 // TRIX 3-D GAME ENGINE
-// Copyright (C) <2017>  <Anton Makridin>
+// Copyright (C) 2017  Anton Makridin
 // Telegram: http://t.me/gtsh77, Email: me@anton-makridin.ru
 
 // This program is free software: you can redistribute it and/or modify

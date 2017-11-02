@@ -6,9 +6,4 @@ css/style.css
 app/templates/*.tpl
 
 assets/unix/
-firefox_root/
-unix_app/build
 unix_app/main.core
-unix_app/main.sublime-project
-unix_app/main.sublime-workspace
-unix_app/make

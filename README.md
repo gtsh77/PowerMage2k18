@@ -1,5 +1,5 @@
-# TRIX 3-D SOFTWARE ENGINE
-This repository contains work on my own research project: new 2d game canvas software render (w/o webgl) which overflows into engineering 3d software render from scratch on UNIX :)<br /><br />
+# TRIX 3-D GAME SOFTWARE ENGINE
+This repository contains work on my own research project: new 2d game canvas software render (w/o webgl) which overflows into engineering 3d FPS game software engine from scratch on UNIX :)<br /><br />
 PROJECT DASHBOARD: https://trello.com/b/cVi9Nqy5/3d-2d-powermage-2k18<br /><br />
 ROADMAP:<br /><br />
 DONE:<br />
@@ -16,9 +16,11 @@ TECH DESIGN:<br />
   8.Lightning (1 color)<br />
   9.Horizontal angle switch<br />
   10.3d objects<br />
-  11.AI<br />
-  12.Sound system<br />
-  13.2d menu render<br /><br />
+  11.3d NPCs
+  12.HUD
+  13.AI<br />
+  14.Sound system<br />
+  15.2d menu render<br /><br />
 3d UNIX CURRENT<br />
 ![screenshot_2017-10-27_23-00-08](https://user-images.githubusercontent.com/8376353/32304647-fbd69fb8-bf81-11e7-8033-4841077fb901.png)<br />
 
