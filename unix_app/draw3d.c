@@ -17,9 +17,9 @@
 
 #include "lib.c"
 
-dbyte playerIndex;
+uint16_t playerIndex;
 
-void draw3d(void)
+extern void draw3d(void)
 {
 	
 	//
@@ -96,8 +96,8 @@ void draw3d(void)
 	#endif
 
 	//60 FPS test
-	byte i;
-	long_u start2, end2;
+	uint8_t i;
+	uint64_t start2, end2;
 	start2 = getCycles();
 	for(i=0;i<5;i++)
 	{

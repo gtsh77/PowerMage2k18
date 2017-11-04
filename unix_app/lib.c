@@ -15,25 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-long_u getCycles(void)
+extern uint64_t getCycles(void)
 {
-	long_u lo,hi;
+	uint64_t lo,hi;
 	__asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-	return ((long_u)hi << 32) | lo;
+	return ((uint64_t)hi << 32) | lo;
 }
 
-dbyte getPlayer(byte *arr, dbyte size)
+extern uint16_t getPlayer(uint8_t *arr, uint16_t size)
 {
-	dbyte i;
+	uint16_t i;
 	for(i=0;i<size;i++){
 	    if(arr[i] == 1) return i;
 	}
 }
 
-void loadTileMap(char *path)
+extern void loadTileMap(int8_t *path)
 {
     FILE *bin;
-    dbyte binlen;
+    uint16_t binlen;
     bin = fopen(path,"rb");
     if(!bin) printf("error: can't read world file: %s\n",path);
 	else
@@ -41,17 +41,16 @@ void loadTileMap(char *path)
 	    fseek(bin, 0, SEEK_END);
 	    binlen = ftell(bin);
 	    rewind(bin);
-	    level.map = (byte *)malloc(sizeof(byte)*(binlen + 1));
+	    level.map = (uint8_t *)malloc(sizeof(uint8_t)*(binlen + 1));
 	    fread(level.map,binlen,1,bin);
 	    level.length = binlen;
-	    fclose(bin);
-	    //printf("world: %p (%d)\n",level.map, level.length);   	
+	    fclose(bin);	
 	}
 	return;
 
 }
 
-void seekAssets(void)
+extern void seekAssets(void)
 {
 	struct asset *cur = e;
 	while(cur < f)
@@ -62,7 +61,7 @@ void seekAssets(void)
     return;
 }
 
-void getAssetById(byte id, struct asset **p)
+extern void getAssetById(uint8_t id, struct asset **p)
 {
 	struct asset *cur = e;
 	while(cur < f)
@@ -77,9 +76,9 @@ void getAssetById(byte id, struct asset **p)
     return;
 }
 
-void loadAssets()
+extern void loadAssets()
 {
-	byte i;
+	uint8_t i;
     e = (struct asset*)malloc(sizeof(struct asset));
     l = f = e;
     for(i=0;i<GAMEOBJECTS;i++)
@@ -94,13 +93,13 @@ void loadAssets()
     return;
 }
 
-void loadAssetItem(struct asset *asset)
+static void loadAssetItem(struct asset *asset)
 {
-	char *type = strrchr(asset->path,'.') + 1;
+	int8_t *type = strrchr(asset->path,'.') + 1;
 	if(strcmp(type,"jpg") == 0)
 	{
-		byte **buffer;
-		int_u i, index, k, buffer_length;
+		uint8_t **buffer;
+		uint32_t i, index, k, buffer_length;
 		FILE *file;
 		struct jpeg_decompress_struct cinfo;
 		struct jpeg_error_mgr jerr;
@@ -113,16 +112,16 @@ void loadAssetItem(struct asset *asset)
 			jpeg_stdio_src(&cinfo, file);
 			jpeg_read_header(&cinfo, TRUE);
 			jpeg_start_decompress(&cinfo);
-			buffer = (byte **)malloc(sizeof(byte));
+			buffer = (uint8_t **)malloc(sizeof(uint8_t));
 			buffer_length = cinfo.output_width*3;
 			//jpeg 24rgb
-			buffer[0] = (byte *)malloc((sizeof(byte))*buffer_length);
+			buffer[0] = (uint8_t *)malloc((sizeof(uint8_t))*buffer_length);
 			//x11 32bgra
-			asset->data = (byte *)malloc((sizeof(byte))*cinfo.output_width*cinfo.output_height*4);
+			asset->data = (uint8_t *)malloc((sizeof(uint8_t))*cinfo.output_width*cinfo.output_height*4);
 			asset->width = cinfo.output_width;	
 			asset->height = cinfo.output_height;
 			asset->type = type;
-			int_u scanlinelength;
+			uint32_t scanlinelength;
 			for(index=0;index<cinfo.output_height;index++)
 			{
 				scanlinelength = cinfo.output_width*index*4;
@@ -160,10 +159,10 @@ void finishBench(void)
     return;
 }
 
-void solveAffineMatrix(double *factors, double *points)
+static void solveAffineMatrix(double *factors, double *points)
 {
-	byte i;
-	int s;	
+	uint8_t i;
+	int32_t s;	
 	double a_data[] = 
 	{ 
 		points[0],points[1],1,0,0,0,-points[0]*points[8],-points[1]*points[8],
@@ -194,26 +193,22 @@ void solveAffineMatrix(double *factors, double *points)
 	return;
 }
 
-void getAPoints(dbyte x, dbyte y, double *factors, coords *coords)
+static void getAPoints(uint16_t x, uint16_t y, double *factors, coords *coords)
 {
 	coords->x = trunc((factors[0] * x + factors[1] * y + factors[2])/(factors[6] * x + factors[7] * y + 1));
 	coords->y = trunc((factors[3] * x + factors[4] * y + factors[5])/(factors[6] * x + factors[7] * y + 1));
 	return;
 }
 
-void doATransform(dbyte width, dbyte height, char deg, byte mult, byte *src_buffer, byte *buffer, double *points)
+static void doATransform(uint16_t width, uint16_t height, int8_t deg, uint8_t mult, uint8_t *src_buffer, uint8_t *buffer, double *points)
 {
     coords ncoords;
-    int_u i, j, index, data_length;
-    dbyte x,y, diff, dComp;
-    // if(deg <0) deg = -1 * deg;
-    // else if(deg > 90) deg = deg - 90;
-    // else ;
+    uint32_t i, j, index, data_length;
+    uint16_t x,y, diff, dComp;
     diff = floor(width * sin(abs(deg>90?deg-90:deg) * (M_PI/180)));
     dComp = diff*2;
     data_length = width*height*4;
     double factors[8];
-    //double points1[] = {width,0,width,height,0,height,0,0,width-dComp,diff,width-dComp,height-diff,0,height,0,0},points2[] = {width,0,width,height,0,height,0,0,width-dComp,0,width-dComp,height,0,height-diff,0,diff},points3[] = {width,0,width,height,0,height,0,0,width-diff,0,width,height-dComp,0,height-dComp,diff,0},factors[8];
 
     if(deg < 0)
     {
@@ -287,12 +282,12 @@ void doATransform(dbyte width, dbyte height, char deg, byte mult, byte *src_buff
     }
     return;
 }
-void doYTransform(dbyte original_height, dbyte height, dbyte width, byte *src_buffer, byte *buffer, int_u buffer_length)
+static void doYTransform(uint16_t original_height, uint16_t height, uint16_t width, uint8_t *src_buffer, uint8_t *buffer, uint32_t buffer_length)
 {
-    int_u i, j, index;
-    dbyte x, y, Y;
+    uint32_t i, j, index;
+    uint16_t x, y, Y;
     double diff;
-    //buffer_length = sizeof(byte)*asset->width*height*4;
+    //buffer_length = sizeof(uint8_t)*asset->width*height*4;
 
     diff = (double)(original_height -1)/(double)(height-1);
     
@@ -312,14 +307,14 @@ void doYTransform(dbyte original_height, dbyte height, dbyte width, byte *src_bu
     return;
 }
 
-void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xsrc, dbyte ysrc, byte mult)
+extern void drawAsset(struct asset *asset, float h, float w, uint8_t perspective, uint16_t xsrc, uint16_t ysrc, uint8_t mult)
 {
     //chk width & height req
-    dbyte height, width, i, j;
+    uint16_t height, width, i, j;
     height = trunc(asset->height * h);
     width = trunc(asset->width * w * mult);
-    int_u buffer_length = width*height*4;
-    int_u mem_line_length = sizeof(byte)*asset->width*4;
+    uint32_t buffer_length = width*height*4;
+    uint32_t mem_line_length = sizeof(uint8_t)*asset->width*4;
     double points[16];
     Pixmap clipMask;
     GC clipMaskGC;
@@ -327,9 +322,9 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
     if(mult < 1) mult = 1;
 
     //clear long buffers
-    memset(buffer.bitmap, 0, sizeof(byte)*buffer_length);
-    memset(buffer.bitmap2, 0, sizeof(byte)*buffer_length);
-    memset(buffer.bitmap3, 0, sizeof(byte)*buffer_length);
+    memset(buffer.bitmap, 0, sizeof(uint8_t)*buffer_length);
+    memset(buffer.bitmap2, 0, sizeof(uint8_t)*buffer_length);
+    memset(buffer.bitmap3, 0, sizeof(uint8_t)*buffer_length);
 
     //copy data from asset src
     for(j=0;j<mult;j++)
@@ -390,6 +385,5 @@ void drawAsset(struct asset *asset, float h, float w, byte perspective, dbyte xs
 	//free pixmap
 	XFreePixmap(session, clipMask);
 
-	return;
-    	
+	return;    	
 }

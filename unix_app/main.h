@@ -40,65 +40,66 @@
 #define MAXTEXW 256
 #define MAXTEXH 256
 
-//own types
-typedef char byte_u;
-typedef unsigned char byte;
-typedef unsigned short dbyte;
-typedef unsigned int int_u;
-typedef unsigned long int long_u;
-typedef struct 
-{
-    dbyte x;
-    dbyte y;
-} coords;
+// ==================
+// =
+// = GLOBALS
+// =
+// ==================
 
-//globals
 extern Display *session;
 extern Window window;
 extern XEvent cur_event;
-extern byte cur_screen;
+extern uint8_t cur_screen;
+extern uint16_t playerIndex;
+extern uint32_t gc_mask;
+extern uint64_t start, end, totals, totale;
 extern GC gc;
-extern int_u gc_mask;
 extern XGCValues gc_val;
-extern long_u start, end, totals, totale;
-extern dbyte playerIndex;
 extern Visual *visual;
 extern Colormap colormap;
 extern Pixmap pixmap;
 
+//coords struct
+typedef struct 
+{
+    uint16_t x;
+    uint16_t y;
+} coords;
+
 //long buffers
 struct
 {
-    byte *bitmap;
-    byte *bitmap2;
-    byte *bitmap3;
+    uint8_t *bitmap;
+    uint8_t *bitmap2;
+    uint8_t *bitmap3;
 } buffer;
 
 //level tiles
 struct
 {
-    byte *map;
-    dbyte length;
+    uint8_t *map;
+    uint16_t length;
 } level;
 
-//all uniq assets mapped as bitmap in mem
+//all uniq assets mapped in mem w dynamic list
 struct asset
 {
-    byte id;
-    char *name;
-    char *type;
-    char *path;
-    dbyte width;
-    dbyte height;
-    byte *data;
-    int_u data_length;
+    uint8_t id;
+    uint8_t *name;
+    uint8_t *type;
+    uint8_t *path;
+    uint16_t width;
+    uint16_t height;
+    uint8_t *data;
+    uint8_t data_length;
     struct asset *n, *p;
 } *e, *l, *f;
 
 //ingame assets count, should be equal to objNames & objIds length
-#define GAMEOBJECTS 8 
+#define GAMEOBJECTS 8
 
-char objNames[GAMEOBJECTS][64] = 
+//game obj definitions
+int8_t objNames[GAMEOBJECTS][64] = 
 {
     "../assets/unix/brick1.jpg",
     "../assets/unix/frenchdoor_wood1.jpg",
@@ -110,7 +111,7 @@ char objNames[GAMEOBJECTS][64] =
     "../assets/unix/wlppr_tan.jpg"
 };
 
-byte objIds[GAMEOBJECTS] = 
+uint8_t objIds[GAMEOBJECTS] = 
 {
     10,
     11,
@@ -122,22 +123,32 @@ byte objIds[GAMEOBJECTS] =
     17
 };
 
-//libs
-long_u getCycles(void);
-dbyte getPlayer(byte *, dbyte);
-void finishBench(void);
-void loadTileMap(char *);
-void seekAssets(void);
-void loadAssets(void);
-void loadAssetItem(struct asset *);
-void getAssetById(byte, struct asset **);
-void solveAffineMatrix(double *, double *);
-void getAPoints(dbyte, dbyte, double *, coords *);
-void doATransform(dbyte, dbyte, char, byte, byte *, byte *, double *);
-void doYTransform(dbyte, dbyte, dbyte, byte *, byte *, int_u);
-void drawAsset(struct asset *, float, float, byte, dbyte, dbyte, byte);
+// ==================
+// =
+// = LIB.C
+// =
+// ==================
 
-//render
-void draw3d(void);
+static void loadAssetItem(struct asset *);
+static void solveAffineMatrix(double *, double *);
+static void getAPoints(uint16_t, uint16_t, double *, coords *);
+static void doYTransform(uint16_t, uint16_t, uint16_t, uint8_t *, uint8_t *, uint32_t);
+static void doATransform(uint16_t, uint16_t, int8_t, uint8_t, uint8_t *, uint8_t *, double *);
+extern void seekAssets(void);
+extern void loadAssets(void);
+extern void finishBench(void);
+extern uint64_t getCycles(void);
+extern void loadTileMap(int8_t *);
+extern uint16_t getPlayer(uint8_t *, uint16_t);
+extern void getAssetById(uint8_t, struct asset **);
+extern void drawAsset(struct asset *, float, float, uint8_t, uint16_t, uint16_t, uint8_t);
+
+// ==================
+// =
+// = RENDER
+// =
+// ==================
+
+extern void draw3d(void);
 
 #endif

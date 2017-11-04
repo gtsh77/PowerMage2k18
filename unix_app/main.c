@@ -22,15 +22,14 @@
 Display *session;
 Window window;
 XEvent cur_event;
-byte cur_screen;
+uint8_t cur_screen;
+uint32_t gc_mask;
+uint64_t start, end, totals, totale;
 GC gc;
-int_u gc_mask;
 XGCValues gc_val;
-long_u start, end, totals, totale;
 Visual *visual;
 Pixmap pixmap;
 Colormap colormap;
-
 
 int main(void)
 {   
@@ -46,9 +45,9 @@ int main(void)
     //load textures and map as bitmap into mem
     loadAssets();
     //alloc long buffers
-    buffer.bitmap = (byte *)malloc(sizeof(byte)*MAXTEXB*MAXTEXW*MAXTEXH*4);
-    buffer.bitmap2 = (byte *)malloc(sizeof(byte)*MAXTEXB*MAXTEXW*MAXTEXH*4);
-    buffer.bitmap3 = (byte *)malloc(sizeof(byte)*MAXTEXB*MAXTEXW*MAXTEXH*4);      
+    buffer.bitmap = (uint8_t *)malloc(sizeof(uint8_t)*MAXTEXB*MAXTEXW*MAXTEXH*4);
+    buffer.bitmap2 = (uint8_t *)malloc(sizeof(uint8_t)*MAXTEXB*MAXTEXW*MAXTEXH*4);
+    buffer.bitmap3 = (uint8_t *)malloc(sizeof(uint8_t)*MAXTEXB*MAXTEXW*MAXTEXH*4);      
 
     //
     // === START X11 SESSION ===
@@ -60,7 +59,7 @@ int main(void)
         exit(1);
     }     
  
-    cur_screen = (byte)DefaultScreen(session);
+    cur_screen = (uint8_t)DefaultScreen(session);
     visual = DefaultVisual(session, DefaultScreen(session));
 
     gc_mask = GCCapStyle | GCJoinStyle;
