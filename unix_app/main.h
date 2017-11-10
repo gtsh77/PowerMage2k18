@@ -35,10 +35,12 @@
 #define CENTERY FIELDH/2
 #define BIT16(u) (u) * 255
 #define SB 1
-#define RB 1
+#define RB 0
+#define DASSET 0
 #define MAXTEXB 10
 #define MAXTEXW 256
 #define MAXTEXH 256
+#define TIMERS 20
 
 // ==================
 // =
@@ -52,7 +54,7 @@ extern XEvent cur_event;
 extern uint8_t cur_screen;
 extern uint16_t playerIndex;
 extern uint32_t gc_mask;
-extern uint64_t start, end, totals, totale;
+extern uint64_t timer[TIMERS];
 extern GC gc;
 extern XGCValues gc_val;
 extern Visual *visual;
@@ -99,16 +101,16 @@ struct asset
 #define GAMEOBJECTS 8
 
 //game obj definitions
-int8_t objNames[GAMEOBJECTS][64] = 
+int8_t objNames[GAMEOBJECTS][128] = 
 {
-    "../assets/unix/brick1.jpg",
-    "../assets/unix/frenchdoor_wood1.jpg",
-    "../assets/unix/interiorwall_set2chrrl.jpg",
-    "../assets/unix/interiorwall_set3chrrl.jpg",
-    "../assets/unix/floor4.jpg",
-    "../assets/unix/frenchfloor_wood1.jpg",
-    "../assets/unix/garagefloor.jpg",
-    "../assets/unix/wlppr_tan.jpg"
+    "../assets/unix/packs/Pak2/textures/algiers/brick1.jpg",
+    "../assets/unix/packs/Pak2/textures/central_europe/frenchdoor_wood1.jpg",
+    "../assets/unix/packs/Pak2/textures/central_europe/interiorwall_set2chrrl.jpg",
+    "../assets/unix/packs/Pak2/textures/central_europe/interiorwall_set3chrrl.jpg",
+    "../assets/unix/packs/Pak2/textures/general_structure/floor4.jpg",
+    "../assets/unix/packs/Pak2/textures/general_structure/frenchfloor_wood1.jpg",
+    "../assets/unix/packs/Pak2/textures/general_structure/garagefloor.jpg",
+    "../assets/unix/packs/Pak2/textures/mohtest/wlppr_tan.jpg" 
 };
 
 uint8_t objIds[GAMEOBJECTS] = 
@@ -129,11 +131,14 @@ uint8_t objIds[GAMEOBJECTS] =
 // =
 // ==================
 
+static uint8_t getPowOf2(uint16_t);
 static void loadAssetItem(struct asset *);
 static void solveAffineMatrix(double *, double *);
 static void getAPoints(uint16_t, uint16_t, double *, coords *);
 static void doYTransform(uint16_t, uint16_t, uint16_t, uint8_t *, uint8_t *, uint32_t);
+static void doXTransform(uint16_t, uint16_t, uint16_t, uint8_t *, uint8_t *, uint32_t);
 static void doATransform(uint16_t, uint16_t, int8_t, uint8_t, uint8_t *, uint8_t *, double *);
+
 extern void seekAssets(void);
 extern void loadAssets(void);
 extern void finishBench(void);

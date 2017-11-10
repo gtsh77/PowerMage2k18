@@ -91,17 +91,16 @@ extern void draw3d(void)
 
 	playerIndex = getPlayer(level.map,level.length);
 	//printf("%d\n",playerIndex);
-	#ifdef RB	
-	start = getCycles();
+	#if RB	
+	timer[2] = getCycles();
 	#endif
 
 	//60 FPS test
 	uint8_t i;
-	uint64_t start2, end2;
-	start2 = getCycles();
+	timer[4] = getCycles();
 	for(i=0;i<5;i++)
 	{
-		start = getCycles();
+		timer[2] = getCycles();
 		//test visualisation
 		struct asset *asset;
 		//floor
@@ -115,12 +114,13 @@ extern void draw3d(void)
 		drawAsset(asset, 0.74, 1, 0, CENTERX-asset->width/2*3, CENTERY-asset->height*0.74/2, 3);
 		//right
 		drawAsset(asset, 1.25, 1, -15, CENTERX+3*asset->width/2 + 0, CENTERY-asset->height*1.25/2, 2);
-		end = getCycles();
-		printf("Render[%d]: %.9f\n",i,(double)(end-start)/3.5e9);
+		timer[3] = getCycles();
+		printf("Render[%d]: %.9f\n",i,(double)(timer[3]-timer[2])/3.5e9);
 	}
-		end2 = getCycles();
-		printf("Time[%d]: %.9f",i,(double)(end2-start2)/3.5e9);
 	//60 FPS test end
+	// struct asset *asset;
+	// getAssetById(12,&asset);
+	// drawAsset(asset, 1, 2, 0, CENTERX-asset->width/2, CENTERY-asset->height/2, 1);
 
 
 	//XCopyArea(session, pixmap, window, gc, 0, 0, FIELDW, FIELDH, 0, 0);
@@ -129,9 +129,9 @@ extern void draw3d(void)
 	// === BENCH STUFF
 	//
 
-	#ifdef RB	
-	end = getCycles();
-	printf("Render: %.9f\n",(double)(end-start)/3.5e9);
+	#if RB	
+	timer[3] = getCycles();
+	printf("Render: %.9f\n",(double)(timer[3]-timer[2])/3.5e9);
 	#endif
 	return;
 }

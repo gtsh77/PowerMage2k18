@@ -24,17 +24,17 @@ Window window;
 XEvent cur_event;
 uint8_t cur_screen;
 uint32_t gc_mask;
-uint64_t start, end, totals, totale;
 GC gc;
 XGCValues gc_val;
 Visual *visual;
 Pixmap pixmap;
 Colormap colormap;
+uint64_t timer[TIMERS];
 
 int main(void)
 {   
     #ifdef SB
-    totals = getCycles();
+    timer[0] = getCycles();
     #endif
 
     //

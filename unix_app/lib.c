@@ -150,10 +150,10 @@ static void loadAssetItem(struct asset *asset)
 void finishBench(void)
 {
 	struct rusage rusage;
-    totale = getCycles();
+    timer[1] = getCycles();
     getrusage(0, &rusage);
     printf("\n\n======== BENCHS ========\n\n");
-    printf("Time: %.9f\n",(double)(totale-totals)/3.5e9);
+    printf("Time: %.9f\n",(double)(timer[1]-timer[0])/3.5e9);
     printf("Memory: %d\n",rusage.ru_maxrss);
     printf("\n======== BENCHS END ========\n");
     return;
@@ -209,6 +209,7 @@ static void doATransform(uint16_t width, uint16_t height, int8_t deg, uint8_t mu
     dComp = diff*2;
     data_length = width*height*4;
     double factors[8];
+    uint8_t p = getPowOf2(width);
 
     if(deg < 0)
     {
@@ -271,10 +272,22 @@ static void doATransform(uint16_t width, uint16_t height, int8_t deg, uint8_t mu
 
     for(i=0,j=0;i<data_length;i+=4,j++)
     {
-		y = floor(j / width);
-		x = j - y*width;
-    	getAPoints(x,y,factors,&ncoords);
-    	index = ncoords.x * 4 + ncoords.y * width * 4;
+    	if(~~p)
+    	{
+    		y = j >> p;
+    		x = j - (y << p); 
+    		getAPoints(x,y,factors,&ncoords);
+    		index = (ncoords.x << 2) + (ncoords.y << (p + 2)); 
+    	}
+    	else
+    	{
+			y = floor(j / width);
+			x = j - y*width;
+			getAPoints(x,y,factors,&ncoords);
+			index = ncoords.x * 4 + ncoords.y * width * 4; 	    	
+	    	   		
+    	}
+
 		buffer[index] = src_buffer[i];
 		buffer[index + 1] = src_buffer[i + 1];
 		buffer[index + 2] = src_buffer[i + 2];
@@ -287,17 +300,26 @@ static void doYTransform(uint16_t original_height, uint16_t height, uint16_t wid
     uint32_t i, j, index;
     uint16_t x, y, Y;
     double diff;
-    //buffer_length = sizeof(uint8_t)*asset->width*height*4;
+    uint8_t p = getPowOf2(width);
 
     diff = (double)(original_height -1)/(double)(height-1);
     
     for(i=0,j=0;i<buffer_length;i+=4,j++)
     {
-		y = floor(j / width);
-		Y = round(y *diff);
-    	x = j - y*width;
-		
-		index = Y * width * 4 + x * 4;
+    	if(~~p)
+    	{
+	    	y = j >> p;
+			Y = round(y *diff);
+	    	x = j - (y << p);		
+			index = (Y << (p + 2)) + (x << 2);
+    	}
+    	else
+    	{
+			y = floor(j / width);
+			Y = round(y *diff);
+	    	x = j - y*width;			
+			index = Y * width * 4 + x * 4;    		
+    	}
 
 		buffer[i] = src_buffer[index];
 		buffer[i + 1] = src_buffer[index + 1];
@@ -386,4 +408,17 @@ extern void drawAsset(struct asset *asset, float h, float w, uint8_t perspective
 	XFreePixmap(session, clipMask);
 
 	return;    	
+}
+
+static uint8_t getPowOf2(uint16_t num)
+{
+	uint16_t num2 = 2;
+	uint8_t p = 1;
+	while(num2 < num)
+	{
+		num2 *= 2;
+		p++;
+	}
+	if(num2 == num) return p;
+	else return 0;
 }
