@@ -131,14 +131,11 @@ uint8_t objIds[GAMEOBJECTS] =
 // =
 // ==================
 
-static uint8_t getPowOf2(uint16_t);
+
 static void loadAssetItem(struct asset *);
-static void solveAffineMatrix(double *, double *);
-static void getAPoints(uint16_t, uint16_t, double *, coords *);
 static void doYTransform(uint16_t, uint16_t, uint16_t, uint8_t *, uint8_t *, uint32_t);
 static void doXTransform(uint16_t, uint16_t, uint16_t, uint8_t *, uint8_t *, uint32_t);
 static void doATransform(uint16_t, uint16_t, int8_t, uint8_t, uint8_t *, uint8_t *, double *);
-
 extern void seekAssets(void);
 extern void loadAssets(void);
 extern void finishBench(void);
@@ -146,7 +143,17 @@ extern uint64_t getCycles(void);
 extern void loadTileMap(int8_t *);
 extern uint16_t getPlayer(uint8_t *, uint16_t);
 extern void getAssetById(uint8_t, struct asset **);
-extern void drawAsset(struct asset *, float, float, uint8_t, uint16_t, uint16_t, uint8_t);
+
+// ==================
+// =
+// = TRANSFORM.C
+// =
+// ==================
+
+static uint8_t getPowOf2(uint16_t);
+extern void solveAffineMatrix(double *, double *);
+extern void getAPoints(uint16_t, uint16_t, double *, coords *);
+extern void drawAsset(struct asset *, float, float, int8_t, uint16_t, uint16_t, uint8_t);
 
 // ==================
 // =
