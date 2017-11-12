@@ -26,6 +26,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <gsl/gsl_linalg.h>
+#include <pthread.h>
 
 #ifndef _MAIN_H
 #define _MAIN_H
@@ -40,7 +41,8 @@
 #define MAXTEXB 10
 #define MAXTEXW 256
 #define MAXTEXH 256
-#define TIMERS 20
+#define TIMERS 32
+#define PS 2
 
 // ==================
 // =
@@ -79,23 +81,34 @@ struct
 //level tiles
 struct
 {
-    uint8_t *map;
+    uint8_t  *map;
     uint16_t length;
 } level;
 
 //all uniq assets mapped in mem w dynamic list
 struct asset
 {
-    uint8_t id;
-    uint8_t *name;
-    uint8_t *type;
-    uint8_t *path;
-    uint16_t width;
-    uint16_t height;
-    uint8_t *data;
-    uint8_t data_length;
-    struct asset *n, *p;
+    uint8_t   id;
+    uint8_t  *name;
+    uint8_t  *type;
+    uint8_t  *path;
+    uint16_t  width;
+    uint16_t  height;
+    uint8_t  *data;
+    uint8_t   data_length;
+    struct    asset *n, *p;
 } *e, *l, *f;
+
+struct afldata
+{
+    uint8_t   p; 
+    uint32_t  i; 
+    uint32_t  j; 
+    uint32_t  buffer_length; 
+    uint16_t  width; 
+    double   *factors; 
+    uint8_t  *buffer_link;
+};
 
 //ingame assets count, should be equal to objNames & objIds length
 #define GAMEOBJECTS 8
@@ -153,7 +166,9 @@ extern void getAssetById(uint8_t, struct asset **);
 static uint8_t getPowOf2(uint16_t);
 extern void solveAffineMatrix(double *, double *);
 extern void getAPoints(uint16_t, uint16_t, double *, coords *);
-extern void drawAsset(struct asset *, float, float, int8_t, uint16_t, uint16_t, uint8_t);
+extern void drawAssetMT(struct asset *, float, float, int8_t, uint16_t, uint16_t, uint8_t);
+extern void drawAssetST(struct asset *, float, float, int8_t, uint16_t, uint16_t, uint8_t);
+static void *afl(void *);
 
 // ==================
 // =

@@ -105,15 +105,15 @@ extern void draw3d(void)
 		struct asset *asset;
 		//floor
 		getAssetById(14,&asset);
-		drawAsset(asset, 2.1, 1, 106, CENTERX-asset->width/2*3, 270, 3);
+		drawAssetMT(asset, 2.1, 1, 106, CENTERX-asset->width/2*3, 270, 3);
 		//walls	
-	 	 getAssetById(12,&asset);
+	 	getAssetById(12,&asset);
 		//left
-		drawAsset(asset, 1.25, 1, 15, CENTERX-5*asset->width/2 + 4, CENTERY-asset->height*1.25/2, 2);
+		drawAssetMT(asset, 1.25, 1, 15, CENTERX-5*asset->width/2 + 4, CENTERY-asset->height*1.25/2, 2);
 		//center
-		drawAsset(asset, 0.74, 1, 0, CENTERX-asset->width/2*3, CENTERY-asset->height*0.74/2, 3);
+		drawAssetMT(asset, 0.74, 1, 0, CENTERX-asset->width/2*3, CENTERY-asset->height*0.74/2, 3);
 		//right
-		drawAsset(asset, 1.25, 1, -15, CENTERX+3*asset->width/2 + 0, CENTERY-asset->height*1.25/2, 2);
+		drawAssetMT(asset, 1.25, 1, -15, CENTERX+3*asset->width/2 + 0, CENTERY-asset->height*1.25/2, 2);
 		timer[3] = getCycles();
 		printf("Render[%d]: %.9f\n",i,(double)(timer[3]-timer[2])/3.5e9);
 	}
