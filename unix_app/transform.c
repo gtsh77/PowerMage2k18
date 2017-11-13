@@ -182,36 +182,105 @@ extern void drawAssetMT(struct asset *asset, float h, float w, int8_t deg, uint1
 	    }
 
 	    solveAffineMatrix(factors,points);
-	    
+	    #if 0  
 		//first th
 	    struct afldata data_1;
 	    void *data_p_1 = &data_1;
 	    data_1.p = p;
-	    data_1.i = buffer_length/PS*0;
-	    data_1.j = buffer_length/PS/4*0;
-	    data_1.buffer_length = buffer_length/PS*(0+1);
+	    data_1.i = trunc(buffer_length/PS*0);
+	    data_1.j = trunc(buffer_length/PS/4*0);
+	    data_1.buffer_length = trunc(buffer_length/PS*(0+1));
 	    data_1.width = width;
 	    data_1.factors = factors;
 	    data_1.buffer_link = buffer_link;
 	    
-	    pthread_t afl_thread;
-		pthread_create(&afl_thread, NULL, &afl, data_p_1);
+	    pthread_t afl_thread_1;
+		pthread_create(&afl_thread_1, NULL, &afl, data_p_1);
 
 		//second th
 	    struct afldata data_2;
 	    void *data_p_2 = &data_2;
 	    data_2.p = p;
-	    data_2.i = buffer_length/PS*1;
-	    data_2.j = buffer_length/PS/4*1;
-	    data_2.buffer_length = buffer_length/PS*(1+1);
+	    data_2.i = trunc(buffer_length/PS*1);
+	    data_2.j = trunc(buffer_length/PS/4*1);
+	    data_2.buffer_length = trunc(buffer_length/PS*(1+1));
 	    data_2.width = width;
 	    data_2.factors = factors;
 	    data_2.buffer_link = buffer_link;
 
-		afl(data_p_2);
+	    pthread_t afl_thread_2;
+		pthread_create(&afl_thread_2, NULL, &afl, data_p_2);	    
+
+		//third th
+	    struct afldata data_3;
+	    void *data_p_3 = &data_3;
+	    data_3.p = p;
+	    data_3.i = trunc(buffer_length/PS*2);
+	    data_3.j = trunc(buffer_length/PS/4*2);
+	    data_3.buffer_length = trunc(buffer_length/PS*(1+2));
+	    data_3.width = width;
+	    data_3.factors = factors;
+	    data_3.buffer_link = buffer_link;
+
+	    pthread_t afl_thread_3;
+		pthread_create(&afl_thread_3, NULL, &afl, data_p_3);	
+
+		//4th th
+	    struct afldata data_4;
+	    void *data_p_4 = &data_4;
+	    data_4.p = p;
+	    data_4.i = trunc(buffer_length/PS*3);
+	    data_4.j = trunc(buffer_length/PS/4*3);
+	    data_4.buffer_length = trunc(buffer_length/PS*(1+3));
+	    data_4.width = width;
+	    data_4.factors = factors;
+	    data_4.buffer_link = buffer_link;
+
+		afl(data_p_4);
 
 		//join
-		pthread_join(afl_thread, NULL);
+		pthread_join(afl_thread_1, NULL);
+		pthread_join(afl_thread_2, NULL);
+		pthread_join(afl_thread_3, NULL); 
+
+		#endif
+
+ // #pragma omp parallel
+ // {
+ //  #pragma omp for
+ //  for(int n=0; n<10; ++n) printf(" %d", n);
+ // }
+ // printf(".\n");
+
+		#pragma omp parallel
+		{
+			#pragma omp for
+		    for(i=0,j=0;i<buffer_length;i+=4,j++)
+		    {
+		    	if(p)
+		    	{
+		    		y = j >> p;
+		    		x = j - (y << p); 
+					nx = trunc((factors[0] * x + factors[1] * y + factors[2])/(factors[6] * x + factors[7] * y + 1));
+					ny = trunc((factors[3] * x + factors[4] * y + factors[5])/(factors[6] * x + factors[7] * y + 1));
+		    		index = (nx << 2) + (ny << (p + 2)); 
+		    	}
+		    	else
+		    	{
+					y = floor(j / width);
+					x = j - y*width;
+					nx = trunc((factors[0] * x + factors[1] * y + factors[2])/(factors[6] * x + factors[7] * y + 1));
+					ny = trunc((factors[3] * x + factors[4] * y + factors[5])/(factors[6] * x + factors[7] * y + 1));
+					index = nx * 4 + ny * width * 4;
+		    	}
+
+				buffer.bitmap3[index] = buffer_link[i];
+				buffer.bitmap3[index + 1] = buffer_link[i + 1];
+				buffer.bitmap3[index + 2] = buffer_link[i + 2];
+				buffer.bitmap3[index + 3] = buffer_link[i + 3];
+		    }
+		} 
+
 
 		//full area
 		XSetForeground(session, clipMaskGC, BlackPixel(session, cur_screen));
@@ -261,7 +330,6 @@ extern void drawAssetST(struct asset *asset, float h, float w, int8_t deg, uint1
 	
     uint16_t height = trunc(asset->height * h);
     uint16_t width = trunc(asset->width * w * mult);
-    printf("w %d\n",width);
     uint16_t x, X, y, Y, nx, ny, d, d2;
     uint8_t p = getPowOf2(width);
     uint32_t i, j, index;
@@ -590,7 +658,7 @@ static void *afl(void *p)
 			x = data->j - y*data->width;
 			nx = trunc((data->factors[0] * x + data->factors[1] * y + data->factors[2])/(data->factors[6] * x + data->factors[7] * y + 1));
 			ny = trunc((data->factors[3] * x + data->factors[4] * y + data->factors[5])/(data->factors[6] * x + data->factors[7] * y + 1));
-			index = nx * 4 + ny * data->width * 4;		    	   		
+			index = nx * 4 + ny * data->width * 4;
     	}
 
 		buffer.bitmap3[index] = data->buffer_link[data->i];

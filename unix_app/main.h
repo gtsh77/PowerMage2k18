@@ -27,6 +27,7 @@
 #include <sys/resource.h>
 #include <gsl/gsl_linalg.h>
 #include <pthread.h>
+#include <omp.h>
 
 #ifndef _MAIN_H
 #define _MAIN_H
@@ -42,7 +43,7 @@
 #define MAXTEXW 256
 #define MAXTEXH 256
 #define TIMERS 32
-#define PS 2
+#define PS 4
 
 // ==================
 // =
