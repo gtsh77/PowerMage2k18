@@ -181,7 +181,16 @@ extern void drawAssetMT(struct asset *asset, float h, float w, int8_t deg, uint1
 	    	points[15] = 0;
 	    }
 
+		// ==================
+		// = SOLVE MATRIX
+		// ==================	    
+
 	    solveAffineMatrix(factors,points);
+
+		// ====================================
+		// = pthread affine loop ver
+		// ====================================	 
+
 	    #if 0  
 		//first th
 	    struct afldata data_1;
@@ -245,6 +254,10 @@ extern void drawAssetMT(struct asset *asset, float h, float w, int8_t deg, uint1
 
 		#endif
 
+		// ====================================
+		// = different omp affine loop ver
+		// ====================================	    		
+
  // #pragma omp parallel
  // {
  //  #pragma omp for
@@ -252,13 +265,57 @@ extern void drawAssetMT(struct asset *asset, float h, float w, int8_t deg, uint1
  // }
  // printf(".\n");
 
-		#pragma omp parallel
-		{
-			#pragma omp for
-		    for(i=0,j=0;i<buffer_length;i+=4,j++)
+ // #pragma omp parallel // starts a new team
+ // {
+ //   //Work0(); // this function would be run by all threads.
+   
+	// #pragma omp sections // divides the team into sections
+	// { 
+	// 	// everything herein is run only once.
+	// 	#pragma omp section
+	// 	{
+	// 	    struct afldata data_1;
+	// 	    void *data_p_1 = &data_1;
+	// 	    data_1.p = p;
+	// 	    data_1.i = trunc(buffer_length/PS*0);
+	// 	    data_1.j = trunc(buffer_length/PS/4*0);
+	// 	    data_1.buffer_length = trunc(buffer_length/PS*(0+1));
+	// 	    data_1.width = width;
+	// 	    data_1.factors = factors;
+	// 	    data_1.buffer_link = buffer_link;
+	// 	    afl(data_p_1);
+	// 	}
+	// 	#pragma omp section
+	// 	{ 
+	// 	    struct afldata data_2;
+	// 	    void *data_p_2 = &data_2;
+	// 	    data_2.p = p;
+	// 	    data_2.i = trunc(buffer_length/PS*1);
+	// 	    data_2.j = trunc(buffer_length/PS/4*1);
+	// 	    data_2.buffer_length = trunc(buffer_length/PS*(1+1));
+	// 	    data_2.width = width;
+	// 	    data_2.factors = factors;
+	// 	    data_2.buffer_link = buffer_link;
+	// 	    afl(data_p_2);
+	// 	}
+	// 	#pragma omp section
+	// 	{
+	// 		//Work4(); 
+	// 	}
+	// }
+   
+ //   //Work5(); // this function would be run by all threads.
+ // }		
+
+		// #pragma omp parallel
+		// {
+			omp_set_num_threads(2); 
+			#pragma omp parallel for private(i) shared(j)
+		    for(i=j=0;i<buffer_length;i+=4)
 		    {
 		    	if(p)
 		    	{
+		    		j = i >> 2;
 		    		y = j >> p;
 		    		x = j - (y << p); 
 					nx = trunc((factors[0] * x + factors[1] * y + factors[2])/(factors[6] * x + factors[7] * y + 1));
@@ -267,6 +324,7 @@ extern void drawAssetMT(struct asset *asset, float h, float w, int8_t deg, uint1
 		    	}
 		    	else
 		    	{
+		    		j = trunc(i/4);
 					y = floor(j / width);
 					x = j - y*width;
 					nx = trunc((factors[0] * x + factors[1] * y + factors[2])/(factors[6] * x + factors[7] * y + 1));
@@ -279,8 +337,11 @@ extern void drawAssetMT(struct asset *asset, float h, float w, int8_t deg, uint1
 				buffer.bitmap3[index + 2] = buffer_link[i + 2];
 				buffer.bitmap3[index + 3] = buffer_link[i + 3];
 		    }
-		} 
+		//} 
 
+		// ==================
+		// = end affine loop
+		// ==================
 
 		//full area
 		XSetForeground(session, clipMaskGC, BlackPixel(session, cur_screen));

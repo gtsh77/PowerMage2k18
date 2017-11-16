@@ -99,22 +99,22 @@ extern void draw3d(void)
 	uint8_t i;
 	double total = 0.0f;
 	timer[4] = getCycles();
-	for(i=0;i<6000;i++)
+	for(i=0;i<60;i++)
 	{
 		timer[2] = getCycles();
 		//test visualisation
 		struct asset *asset;
 		//floor
 		getAssetById(14,&asset);
-		drawAssetMT(asset, 2.1, 1, 106, CENTERX-asset->width/2*3, 270, 3);
+		drawAssetST(asset, 2.1, 1, 106, CENTERX-asset->width/2*3, 270, 3);
 		//walls	
 	 	getAssetById(12,&asset);
 		//left
-		drawAssetMT(asset, 1.25, 1, 15, CENTERX-5*asset->width/2 + 4, CENTERY-asset->height*1.25/2, 2);
+		drawAssetST(asset, 1.25, 1, 15, CENTERX-5*asset->width/2 + 4, CENTERY-asset->height*1.25/2, 2);
 		//center
-		drawAssetMT(asset, 0.74, 1, 0, CENTERX-asset->width/2*3, CENTERY-asset->height*0.74/2, 3);
+		drawAssetST(asset, 0.74, 1, 0, CENTERX-asset->width/2*3, CENTERY-asset->height*0.74/2, 3);
 		//right
-		drawAssetMT(asset, 1.25, 1, -15, CENTERX+3*asset->width/2 + 0, CENTERY-asset->height*1.25/2, 2);
+		drawAssetST(asset, 1.25, 1, -15, CENTERX+3*asset->width/2 + 0, CENTERY-asset->height*1.25/2, 2);
 		timer[3] = getCycles();
 		total += (double)(timer[3]-timer[2])/3.5e9;
 		printf("Render[%d]: %.9f\n",i,(double)(timer[3]-timer[2])/3.5e9);

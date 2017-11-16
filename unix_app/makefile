@@ -1,2 +1,2 @@
 all:
-	gcc main.c -o main -lX11 -ljpeg -lgsl -lgslcblas -lm -lpthread  -lomp
+	gcc main.c -o main -lX11 -ljpeg -lgsl -lgslcblas -lm -lpthread  -lomp -fopenmp
